@@ -10,3 +10,6 @@
 [submodule ".emacs.d/inf-ruby"]
 	path = .emacs.d/inf-ruby
 	url = https://github.com/nonsequitur/inf-ruby.git
+[submodule "install/android-mode"]
+	path = install/android-mode
+	url = git@github.com:nibua-r/android-mode.git
