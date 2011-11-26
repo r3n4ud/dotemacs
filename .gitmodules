@@ -13,3 +13,6 @@
 [submodule "install/android-mode"]
 	path = install/android-mode
 	url = git@github.com:nibua-r/android-mode.git
+[submodule "install/auto-complete"]
+	path = install/auto-complete
+	url = git@github.com:nibua-r/auto-complete.git
