@@ -1,14 +1,14 @@
-[submodule ".emacs.d/snippets"]
-	path = .emacs.d/snippets
+[submodule ".emacs.d/site-lisp/snippets"]
+	path = .emacs.d/site-lisp/snippets
 	url = git@github.com:nibua-r/snippets.git
-[submodule ".emacs.d/yasnippet"]
-	path = .emacs.d/yasnippet
+[submodule ".emacs.d/site-lisp/yasnippet"]
+	path = .emacs.d/site-lisp/yasnippet
 	url = git@github.com:nibua-r/yasnippet.git
-[submodule ".emacs.d/rinari"]
-	path = .emacs.d/rinari
+[submodule ".emacs.d/site-lisp/rinari"]
+	path = .emacs.d/site-lisp/rinari
 	url = https://github.com/eschulte/rinari.git
-[submodule ".emacs.d/inf-ruby"]
-	path = .emacs.d/inf-ruby
+[submodule ".emacs.d/site-lisp/inf-ruby"]
+	path = .emacs.d/site-lisp/inf-ruby
 	url = https://github.com/nonsequitur/inf-ruby.git
 [submodule "install/android-mode"]
 	path = install/android-mode
