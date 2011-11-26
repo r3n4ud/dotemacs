@@ -16,3 +16,6 @@
 [submodule "install/auto-complete"]
 	path = install/auto-complete
 	url = git@github.com:nibua-r/auto-complete.git
+[submodule ".emacs.d/site-lisp/textile-mode"]
+	path = .emacs.d/site-lisp/textile-mode
+	url = https://github.com/emacsmirror/textile-mode.git
