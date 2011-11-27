@@ -7,9 +7,6 @@
 [submodule ".emacs.d/site-lisp/rinari"]
 	path = .emacs.d/site-lisp/rinari
 	url = https://github.com/eschulte/rinari.git
-[submodule ".emacs.d/site-lisp/inf-ruby"]
-	path = .emacs.d/site-lisp/inf-ruby
-	url = https://github.com/nonsequitur/inf-ruby.git
 [submodule "install/android-mode"]
 	path = install/android-mode
 	url = git@github.com:nibua-r/android-mode.git
