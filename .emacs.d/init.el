@@ -1,6 +1,6 @@
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2011-11-27 21:06:27>
+;; Time-stamp: <2011-12-03 23:00:17>
 ;; -*- coding: utf-8 -*-
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
@@ -163,10 +163,10 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
-;; (add-to-list 'load-path "~/.emacs.d/site-lisp/android")
-;; (require 'android-java-style)
-;; (add-hook 'java-mode-hook 'android-make-newline-indent)
-;; (add-hook 'java-mode-hook 'android-set-java-style)
+(add-to-list 'load-path "~/.emacs.d/site-lisp/custom-java-style")
+(require 'custom-java-style)
+(add-hook 'java-mode-hook 'custom-make-newline-indent)
+(add-hook 'java-mode-hook 'custom-set-java-style)
 
 (add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/android-mode")
 (require 'android-mode)
