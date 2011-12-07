@@ -1,6 +1,6 @@
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2011-12-03 23:00:17>
+;; Time-stamp: <2011-12-07 16:16:41>
 ;; -*- coding: utf-8 -*-
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
@@ -172,6 +172,11 @@
 (require 'android-mode)
 
 (require 'magit)
+
+(add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/lua-mode")
+(autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+(add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
+(add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
 ;; (require 'ajc-java-complete-config)
