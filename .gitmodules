@@ -29,3 +29,6 @@
 [submodule ".emacs.d/site-lisp/lua-mode"]
 	path = .emacs.d/site-lisp/lua-mode
 	url = https://github.com/immerrr/lua-mode.git
+[submodule ".emacs.d/site-lisp/rvm"]
+	path = .emacs.d/site-lisp/rvm
+	url = https://github.com/senny/rvm.el.git

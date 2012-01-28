@@ -1,6 +1,6 @@
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2011-12-07 16:16:41>
+;; Time-stamp: <2012-01-29 00:26:25>
 ;; -*- coding: utf-8 -*-
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
@@ -177,6 +177,10 @@
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+
+(add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/rvm")
+(require 'rvm)
+(rvm-use-default) ;; use rvm's default ruby for the current Emacs session
 
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
 ;; (require 'ajc-java-complete-config)
