@@ -1,6 +1,6 @@
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-01-29 00:26:25>
+;; Time-stamp: <2012-02-17 14:08:17>
 ;; -*- coding: utf-8 -*-
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
@@ -181,6 +181,10 @@
 (add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/rvm")
 (require 'rvm)
 (rvm-use-default) ;; use rvm's default ruby for the current Emacs session
+
+(add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/yaml-mode")
+(require 'yaml-mode)
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
 ;; (require 'ajc-java-complete-config)
