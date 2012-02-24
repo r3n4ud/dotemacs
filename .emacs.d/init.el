@@ -1,6 +1,6 @@
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-02-17 14:08:17>
+;; Time-stamp: <2012-02-24 00:36:04>
 ;; -*- coding: utf-8 -*-
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
@@ -110,7 +110,9 @@
  nxhtml-global-minor-mode t
  mumamo-chunk-coloring 'submode-colored
  nxhtml-skip-welcome t
- indent-region-mode t)
+ indent-region-mode t
+ rng-nxml-auto-validate-flag nil
+ nxml-degraded t)
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo-mode))
 
 ;; ;; Enforce nxml mode for xml file
