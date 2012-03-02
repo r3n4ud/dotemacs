@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-03-02 01:30:34>
+;; Time-stamp: <2012-03-02 02:18:06>
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -111,12 +111,16 @@
 (add-to-list 'load-path "~/.emacs.d/site-lisp/yasnippet")
 (require 'yasnippet)
 (setq yas/trigger-key (kbd "C-c C-t"))
-(setq yas/root-directory '("~/.emacs.d/site-lisp/yasnippet/snippets"
-                           "~/.emacs.d/site-lisp/snippets"))
-;;                           "~/.emacs.d/site-lisp/external-snippets"))
-(yas/initialize)
-;; Map `yas/load-directory' to every element
-(mapc 'yas/load-directory yas/root-directory)
+;; (setq yas/root-directory '("~/.emacs.d/site-lisp/yasnippet/snippets"
+;;                            "~/.emacs.d/site-lisp/snippets"))
+;; ;;                           "~/.emacs.d/site-lisp/external-snippets"))
+;; (yas/initialize)
+;; ;; Map `yas/load-directory' to every element
+;; (mapc 'yas/load-directory yas/root-directory)
+
+(setq yas/snippet-dirs '("~/.emacs.d/site-lisp/snippets"))
+(yas/global-mode 1)
+
 
 ;; auto-complete
 (add-to-list 'load-path "~/.emacs.d/site-lisp/auto-complete")

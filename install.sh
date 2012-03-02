@@ -28,6 +28,9 @@ git submodule init && git submodule update
 cd $INITIAL_DIR
 cd .emacs.d/site-lisp/yasnippet
 git submodule init && git submodule update
+gem install plist trollop
+rake convert_bundles
+rake compile
 
 cd $INITIAL_DIR
 cd .emacs.d/
