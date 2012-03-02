@@ -20,12 +20,12 @@ do
 done
 
 cd $INITIAL_DIR
-
 git submodule init && git submodule update
 
 cd .emacs.d/site-lisp/rinari
 git submodule init && git submodule update
 
+cd $INITIAL_DIR
 cd .emacs.d/site-lisp/yasnippet
 git submodule init && git submodule update
 
