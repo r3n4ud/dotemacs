@@ -26,6 +26,9 @@ git submodule init && git submodule update
 cd .emacs.d/site-lisp/rinari
 git submodule init && git submodule update
 
+cd .emacs.d/site-lisp/yasnippet
+git submodule init && git submodule update
+
 cd .emacs.d/
 emacs -Q -L . -batch -f batch-byte-compile autopair.el
 
