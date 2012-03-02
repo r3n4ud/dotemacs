@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-03-02 02:18:06>
+;; Time-stamp: <2012-03-02 02:21:58>
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -118,7 +118,7 @@
 ;; ;; Map `yas/load-directory' to every element
 ;; (mapc 'yas/load-directory yas/root-directory)
 
-(setq yas/snippet-dirs '("~/.emacs.d/site-lisp/snippets"))
+(setq yas/snippet-dirs '("~/.emacs.d/site-lisp/snippets" "~/.emacs.d/site-lisp/yasnippet/extras/imported"))
 (yas/global-mode 1)
 
 
