@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-03-02 02:21:58>
+;; Time-stamp: <2012-03-02 15:25:50>
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -127,6 +127,7 @@
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
 (ac-config-default)
+(setq-default ac-sources '(ac-source-yasnippet ac-sources))
 
 (defun ac-custom-lisp-mode-setup ()
   (setq ac-sources '(ac-source-yasnippet
