@@ -1,20 +1,16 @@
+;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-02-24 00:36:04>
-;; -*- coding: utf-8 -*-
+;; Time-stamp: <2012-03-02 01:30:34>
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
-;;----------------------------------------------------------------------------
 ;; Allow access from emacsclient
-;;----------------------------------------------------------------------------
 (require 'server)
 (unless (server-running-p)
   (server-start))
 
-;;----------------------------------------------------------------------------
 ;; Variables configured via the interactive 'customize' interface
-;;----------------------------------------------------------------------------
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
@@ -24,6 +20,9 @@
 ;; Turns on Auto Fill for all modes
 ;; TODO: check if this is redundant with (auto-fill-mode t)
 (setq-default auto-fill-function 'do-auto-fill)
+
+(require 'autopair)
+(autopair-global-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful before-save-hook bindings
@@ -41,14 +40,14 @@
                          (untabify (point-min) (point-max)))))
 
 ;; Deletes all blank lines at the end of the file before saving.
-(defun my-delete-trailing-blank-lines ()
+(defun delete-trailing-blank-lines ()
   "Deletes all blank lines at the end of the file."
   (interactive)
   (save-excursion
     (save-restriction (widen)
                       (goto-char (point-max))
                       (delete-blank-lines))))
-(add-hook 'before-save-hook 'my-delete-trailing-blank-lines)
+(add-hook 'before-save-hook 'delete-trailing-blank-lines)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -56,14 +55,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Indents the whole buffer
-;; Original
-;; (defun iwb ()
-;;   "indent whole buffer"
-;;   (interactive)
-;;   (delete-trailing-whitespace)
-;;   (indent-region (point-min) (point-max) nil)
-;;   (untabify (point-min) (point-max)))
-;; Mine
 (defun iwb ()
   "Indents whole buffer."
   (interactive)
@@ -95,10 +86,7 @@
 
 
 
-;; Set the color theme (deprecated in emacs 24)
-;; (require 'color-theme)
-;; (color-theme-initialize)
-;; (color-theme-charcoal-black)
+
 
 ;; rinari
 (add-to-list 'load-path "~/.emacs.d/site-lisp/rinari")
@@ -115,9 +103,9 @@
  nxml-degraded t)
 (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo-mode))
 
-;; ;; Enforce nxml mode for xml file
-;; (add-to-list 'auto-mode-alist '("\\.xml\\'" . auto-complete-mode))
-;; (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+;; Enforce nxml mode for xml file
+(add-to-list 'auto-mode-alist '("\\.xml\\'" . auto-complete-mode))
+(add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
 ;; yasnippet
 (add-to-list 'load-path "~/.emacs.d/site-lisp/yasnippet")
@@ -179,10 +167,6 @@
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
-
-(add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/rvm")
-(require 'rvm)
-(rvm-use-default) ;; use rvm's default ruby for the current Emacs session
 
 (add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/yaml-mode")
 (require 'yaml-mode)

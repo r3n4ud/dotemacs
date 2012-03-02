@@ -24,7 +24,8 @@
  '(inhibit-startup-screen t)
  '(require-final-newline (quote visit-save))
  '(show-paren-mode t)
- '(time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S"))
+ '(time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
+ '(whitespace-line-column 100))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
