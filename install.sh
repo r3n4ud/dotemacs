@@ -7,6 +7,9 @@ SCRIPT_BASE_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 INSTALL_DIR=$SCRIPT_BASE_DIR/.emacs.d/site-lisp
 
+cd $INITIAL_DIR
+git submodule init && git submodule update
+
 echo "-- Move to source directory ${SCRIPT_BASE_DIR}/install"
 cd $SCRIPT_BASE_DIR/install
 
@@ -20,8 +23,6 @@ do
 done
 
 cd $INITIAL_DIR
-git submodule init && git submodule update
-
 cd .emacs.d/site-lisp/rinari
 git submodule init && git submodule update
 
