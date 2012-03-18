@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-03-02 15:25:50>
+;; Time-stamp: <2012-03-18 21:27:57>
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -85,8 +85,8 @@
   (move-line (if (null n) 1 n)))
 
 
-
-
+;; ido-mode
+(require 'ido)
 
 ;; rinari
 (add-to-list 'load-path "~/.emacs.d/site-lisp/rinari")
