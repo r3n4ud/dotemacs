@@ -14,7 +14,6 @@
  '(display-time-format "∥ %A %e %B − %R ∥")
  '(display-time-mode t)
  '(fill-column 100)
- '(whitespace-line-column 100)
  '(fringe-mode nil nil (fringe))
  '(global-font-lock-mode t)
  '(global-subword-mode t)
@@ -25,10 +24,11 @@
  '(require-final-newline (quote visit-save))
  '(show-paren-mode t)
  '(time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
+ '(tool-bar-mode nil)
  '(whitespace-line-column 100))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+)
