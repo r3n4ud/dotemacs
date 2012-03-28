@@ -1,25 +1,31 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-03-18 21:27:57>
+;; Time-stamp: <2012-03-28 19:09:05>
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
-;; Allow access from emacsclient
-(require 'server)
-(unless (server-running-p)
-  (server-start))
+;;(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+;;(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
-;; Variables configured via the interactive 'customize' interface
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file)
+(setq inhibit-startup-screen t)
+(setq inhibit-startup-echo-area-message t)
 
 ;; Substitutes the call to yes-or-no-p to y-or-no-p
 (fset 'yes-or-no-p 'y-or-n-p)
 
 ;; Turns on Auto Fill for all modes
-;; TODO: check if this is redundant with (auto-fill-mode t)
 (setq-default auto-fill-function 'do-auto-fill)
+
+;; Start emacs in fullscreen mode in Xorg
+(defun fullscreen ()
+       (interactive)
+       (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+                         '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+(if (eq window-system 'x)
+    (add-hook 'emacs-startup-hook 'fullscreen)
+)
 
 (require 'autopair)
 (autopair-global-mode)
@@ -35,7 +41,7 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Removes tabs from the entire buffer before saving
-(add-hook 'before-save-hooks
+(add-hook 'before-save-hook
           (lambda () (if (not indent-tabs-mode)
                          (untabify (point-min) (point-max)))))
 
@@ -85,95 +91,47 @@
   (move-line (if (null n) 1 n)))
 
 
-;; ido-mode
-(require 'ido)
+;; Modes configuration
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+(progn (cd "~/.emacs.d/site-lisp")
+       (normal-top-level-add-subdirs-to-load-path))
+
+(require 'xmltok)
+(require 'init-ido)
+(require 'init-yasnippet)
+(require 'init-auto-complete)
+(require 'init-uniquify)
 
 ;; rinari
-(add-to-list 'load-path "~/.emacs.d/site-lisp/rinari")
 (require 'rinari)
 
-;; nXhtml
-(load "~/.emacs.d/site-lisp/nxhtml/autostart.el")
-(setq
- nxhtml-global-minor-mode t
- mumamo-chunk-coloring 'submode-colored
- nxhtml-skip-welcome t
- indent-region-mode t
- rng-nxml-auto-validate-flag nil
- nxml-degraded t)
-(add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo-mode))
+;; ;; nXhtml
+;; (load "~/.emacs.d/site-lisp/nxhtml/autostart.el")
+;; (setq
+;;  nxhtml-global-minor-mode t
+;;  mumamo-chunk-coloring 'submode-colored
+;;  nxhtml-skip-welcome t
+;;  indent-region-mode t
+;;  rng-nxml-auto-validate-flag nil
+;;  nxml-degraded t)
+;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo-mode))
 
-;; Enforce nxml mode for xml file
-(add-to-list 'auto-mode-alist '("\\.xml\\'" . auto-complete-mode))
-(add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
+;; ;; Enforce nxml mode for xml file
+;; (add-to-list 'auto-mode-alist '("\\.xml\\'" . auto-complete-mode))
+;; (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
 
-;; yasnippet
-(add-to-list 'load-path "~/.emacs.d/site-lisp/yasnippet")
-(require 'yasnippet)
-(setq yas/trigger-key (kbd "C-c C-t"))
-;; (setq yas/root-directory '("~/.emacs.d/site-lisp/yasnippet/snippets"
-;;                            "~/.emacs.d/site-lisp/snippets"))
-;; ;;                           "~/.emacs.d/site-lisp/external-snippets"))
-;; (yas/initialize)
-;; ;; Map `yas/load-directory' to every element
-;; (mapc 'yas/load-directory yas/root-directory)
-
-(setq yas/snippet-dirs '("~/.emacs.d/site-lisp/snippets" "~/.emacs.d/site-lisp/yasnippet/extras/imported"))
-(yas/global-mode 1)
-
-
-;; auto-complete
-(add-to-list 'load-path "~/.emacs.d/site-lisp/auto-complete")
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/site-lisp/auto-complete/ac-dict")
-(ac-config-default)
-(setq-default ac-sources '(ac-source-yasnippet ac-sources))
-
-(defun ac-custom-lisp-mode-setup ()
-  (setq ac-sources '(ac-source-yasnippet
-                     ac-source-features
-                     ac-source-functions
-                     ac-source-variables
-                     ac-source-abbrev
-                     ac-source-symbols
-                     ac-source-dictionary
-                     ac-source-words-in-same-mode-buffers))
-  ((lambda () (auto-complete-mode 1))))
-(add-hook 'emacs-lisp-mode-hook 'ac-custom-lisp-mode-setup)
-(add-hook 'lisp-interaction-mode-hook 'ac-custom-lisp-mode-setup)
-(add-hook 'lisp-mode-hook 'ac-custom-lisp-mode-setup)
-
-;; android specific settings
-;; AndroidManifest.xml
-(defun ac-android-manifest-nxml-setup()
-  (when (string= (buffer-name) "AndroidManifest.xml")
-    (setq ac-sources '(ac-source-yasnippet
-                       ac-source-abbrev
-                       ac-source-dictionary
-                       ac-source-words-in-same-mode-buffers))
-    ((lambda () (auto-complete-mode 1)))))
-(add-hook 'nxml-mode-hook 'ac-android-manifest-nxml-setup)
-
-;;
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'post-forward-angle-brackets)
-
-(add-to-list 'load-path "~/.emacs.d/site-lisp/custom-java-style")
 (require 'custom-java-style)
 (add-hook 'java-mode-hook 'custom-make-newline-indent)
 (add-hook 'java-mode-hook 'custom-set-java-style)
 
-(add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/android-mode")
 (require 'android-mode)
 
 (require 'magit)
 
-(add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/lua-mode")
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))
 (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
 
-(add-to-list 'load-path "/home/renaud/.emacs.d/site-lisp/yaml-mode")
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
@@ -202,3 +160,19 @@
 (global-set-key [(C-left)] 'backward-word) ;; useful for subword-mode
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
+
+;; Allow access from emacsclient
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
+;; Variables configured via the interactive 'customize' interface
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
+
+;; Use utf-8 as default
+(setq locale-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
