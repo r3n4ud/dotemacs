@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-03-28 19:09:05>
+;; Time-stamp: <2012-04-03 18:58:43>
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -101,6 +101,7 @@
 (require 'init-yasnippet)
 (require 'init-auto-complete)
 (require 'init-uniquify)
+(require 'init-auto-insert)
 
 ;; rinari
 (require 'rinari)
