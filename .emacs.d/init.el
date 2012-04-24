@@ -1,7 +1,9 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-04-03 18:58:43>
+;; Time-stamp: <2012-04-24 19:33:19>
+
+(load-theme 'deeper-blue 'NO-CONFIRM)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d"))
 
@@ -105,6 +107,9 @@
 
 ;; rinari
 (require 'rinari)
+
+(require 'feature-mode)
+(add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 
 ;; ;; nXhtml
 ;; (load "~/.emacs.d/site-lisp/nxhtml/autostart.el")
