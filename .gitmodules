@@ -41,3 +41,6 @@
 [submodule ".emacs.d/site-lisp/feature-mode"]
 	path = .emacs.d/site-lisp/feature-mode
 	url = https://github.com/michaelklishin/cucumber.el.git
+[submodule ".emacs.d/site-lisp/markdown-mode"]
+	path = .emacs.d/site-lisp/markdown-mode
+	url = http://jblevins.org/git/markdown-mode.git
