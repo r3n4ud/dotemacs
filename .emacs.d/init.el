@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-05-23 21:59:50>
+;; Time-stamp: <2012-07-28 22:15:42>
 
 (load-theme 'deeper-blue 'NO-CONFIRM)
 
@@ -104,6 +104,7 @@
 (require 'init-auto-complete)
 (require 'init-uniquify)
 (require 'init-auto-insert)
+(require 'init-markdown)
 
 ;; rinari
 (require 'rinari)
@@ -140,11 +141,6 @@
 
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
-
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(setq auto-mode-alist
-      (cons '("\\.text" . markdown-mode) auto-mode-alist))
 
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
 ;; (require 'ajc-java-complete-config)
