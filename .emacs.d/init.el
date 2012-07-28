@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-07-28 22:15:42>
+;; Time-stamp: <2012-07-28 22:50:46>
 
 (load-theme 'deeper-blue 'NO-CONFIRM)
 
@@ -106,8 +106,12 @@
 (require 'init-auto-insert)
 (require 'init-markdown)
 
+;; Ruby and rails configuration
+
 ;; rinari
 (require 'rinari)
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
 
 (require 'feature-mode)
 (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
