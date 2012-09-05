@@ -172,6 +172,17 @@
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 
+;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (newline)
+  (yank)
+)
+(global-set-key (kbd "C-d") 'duplicate-line)
+
 ;; Allow access from emacsclient
 (require 'server)
 (unless (server-running-p)
