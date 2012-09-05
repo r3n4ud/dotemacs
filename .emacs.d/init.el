@@ -1,7 +1,10 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-07-28 22:50:46>
+;; Time-stamp: <2012-09-05 23:32:46>
+
+(global-unset-key (kbd "C-c C-t"))
+(global-unset-key (kbd "C-t"))
 
 (load-theme 'deeper-blue 'NO-CONFIRM)
 
