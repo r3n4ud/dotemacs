@@ -1,7 +1,10 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-05-23 21:59:50>
+;; Time-stamp: <2012-09-05 23:32:46>
+
+(global-unset-key (kbd "C-c C-t"))
+(global-unset-key (kbd "C-t"))
 
 (load-theme 'deeper-blue 'NO-CONFIRM)
 
@@ -104,9 +107,14 @@
 (require 'init-auto-complete)
 (require 'init-uniquify)
 (require 'init-auto-insert)
+(require 'init-markdown)
+
+;; Ruby and rails configuration
 
 ;; rinari
 (require 'rinari)
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
 
 (require 'feature-mode)
 (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
@@ -141,11 +149,6 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
-(autoload 'markdown-mode "markdown-mode"
-  "Major mode for editing Markdown files" t)
-(setq auto-mode-alist
-      (cons '("\\.text" . markdown-mode) auto-mode-alist))
-
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
 ;; (require 'ajc-java-complete-config)
 ;; (add-hook 'java-mode-hook 'ajc-java-complete-mode)
@@ -171,6 +174,17 @@
 (global-set-key [(C-left)] 'backward-word) ;; useful for subword-mode
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
+
+;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (newline)
+  (yank)
+)
+(global-set-key (kbd "C-d") 'duplicate-line)
 
 ;; Allow access from emacsclient
 (require 'server)
