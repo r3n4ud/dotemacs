@@ -38,3 +38,9 @@
 [submodule ".emacs.d/site-lisp/markdown-mode"]
 	path = .emacs.d/site-lisp/markdown-mode
 	url = http://jblevins.org/git/markdown-mode.git
+[submodule ".emacs.d/site-lisp/fuzzy"]
+	path = .emacs.d/site-lisp/fuzzy
+	url = https://github.com/auto-complete/fuzzy-el.git
+[submodule ".emacs.d/site-lisp/popup"]
+	path = .emacs.d/site-lisp/popup
+	url = https://github.com/auto-complete/popup-el.git
