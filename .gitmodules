@@ -38,3 +38,9 @@
 [submodule ".emacs.d/site-lisp/popup"]
         path = .emacs.d/site-lisp/popup
         url = https://github.com/auto-complete/popup-el.git
+[submodule "install/auto-complete"]
+	path = install/auto-complete
+	url = https://github.com/auto-complete/auto-complete.git
+[submodule ".emacs.d/site-lisp/yasnippet"]
+	path = .emacs.d/site-lisp/yasnippet
+	url = https://github.com/capitaomorte/yasnippet.git
