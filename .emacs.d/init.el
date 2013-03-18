@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2012-09-05 23:32:46>
+;; Time-stamp: <2013-03-18 23:23:12>
 
 (global-unset-key (kbd "C-c C-t"))
 (global-unset-key (kbd "C-t"))
@@ -141,6 +141,9 @@
 (require 'android-mode)
 
 (require 'magit)
+
+(require 'git-gutter)
+(global-git-gutter-mode t)
 
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 (add-to-list 'auto-mode-alist '("\\.lua$" . lua-mode))

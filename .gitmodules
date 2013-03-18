@@ -44,3 +44,6 @@
 [submodule ".emacs.d/site-lisp/yasnippet"]
 	path = .emacs.d/site-lisp/yasnippet
 	url = https://github.com/capitaomorte/yasnippet.git
+[submodule ".emacs.d/site-lisp/git-gutter"]
+	path = .emacs.d/site-lisp/git-gutter
+	url = https://github.com/syohex/emacs-git-gutter.git
