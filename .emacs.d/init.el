@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2013-03-18 23:23:12>
+;; Time-stamp: <2013-04-07 23:25:49>
 
 (global-unset-key (kbd "C-c C-t"))
 (global-unset-key (kbd "C-t"))
@@ -204,3 +204,5 @@
 (set-terminal-coding-system 'utf-8)
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
+
+(setq default-directory "/home/renaud")
