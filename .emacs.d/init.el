@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2013-04-07 23:25:49>
+;; Time-stamp: <2013-04-08 18:51:18>
 
 (global-unset-key (kbd "C-c C-t"))
 (global-unset-key (kbd "C-t"))
@@ -108,6 +108,7 @@
 (require 'init-uniquify)
 (require 'init-auto-insert)
 (require 'init-markdown)
+(require 'init-groovy)
 
 ;; Ruby and rails configuration
 
