@@ -13,6 +13,10 @@ git submodule init && git submodule update
 echo "-- Move to source directory ${SCRIPT_BASE_DIR}/install"
 cd $SCRIPT_BASE_DIR/install
 
+rm -rf auto-complete/lib/fuzzy auto-complete/lib/popup
+ln -s $INSTALL_DIR/fuzzy auto-complete/lib/
+ln -s $INSTALL_DIR/popup auto-complete/lib/
+
 for i in android-mode auto-complete
 do
     echo "--- Install ${i}"
