@@ -47,3 +47,6 @@
 [submodule ".emacs.d/site-lisp/groovy"]
 	path = .emacs.d/site-lisp/groovy
 	url = https://github.com/russel/Emacs-Groovy-Mode.git
+[submodule ".emacs.d/site-lisp/git-modes"]
+	path = .emacs.d/site-lisp/git-modes
+	url = https://github.com/magit/git-modes.git
