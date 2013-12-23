@@ -50,3 +50,12 @@
 [submodule ".emacs.d/site-lisp/git-modes"]
 	path = .emacs.d/site-lisp/git-modes
 	url = https://github.com/magit/git-modes.git
+[submodule ".emacs.d/site-lisp/emacs-epc"]
+	path = .emacs.d/site-lisp/emacs-epc
+	url = https://github.com/kiwanami/emacs-epc.git
+[submodule ".emacs.d/site-lisp/emacs-ctable"]
+	path = .emacs.d/site-lisp/emacs-ctable
+	url = https://github.com/kiwanami/emacs-ctable.git
+[submodule ".emacs.d/site-lisp/emacs-deferred"]
+	path = .emacs.d/site-lisp/emacs-deferred
+	url = https://github.com/kiwanami/emacs-deferred.git
