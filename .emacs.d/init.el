@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2013-11-20 16:08:20>
+;; Time-stamp: <2013-12-26 16:46:50>
 
 (global-unset-key (kbd "C-c C-t"))
 (global-unset-key (kbd "C-t"))
@@ -138,6 +138,7 @@
 (require 'custom-java-style)
 (add-hook 'java-mode-hook 'custom-make-newline-indent)
 (add-hook 'java-mode-hook 'custom-set-java-style)
+(add-hook 'java-mode-hook (lambda() (local-unset-key (kbd "C-d"))))
 
 (require 'android-mode)
 
@@ -178,6 +179,10 @@
 (global-set-key [(C-left)] 'backward-word) ;; useful for subword-mode
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
+
+(add-hook 'cc-mode-hook
+          (lambda()
+            (local-unset-key (kbd "C-d"))))
 
 ;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
 (defun duplicate-line()
