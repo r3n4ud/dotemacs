@@ -38,7 +38,7 @@ rake convert_bundles
 rake compile
 
 cd $INITIAL_DIR
-cd .emacs.d/
+cd .emacs.d/site-lisp/autopair
 emacs -Q -L . -batch -f batch-byte-compile autopair.el
 
 cd $INITIAL_DIR
