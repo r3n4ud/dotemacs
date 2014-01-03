@@ -1,7 +1,7 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2013-12-26 16:46:50>
+;; Time-stamp: <2014-01-03 19:55:03>
 
 (global-unset-key (kbd "C-c C-t"))
 (global-unset-key (kbd "C-t"))
@@ -172,6 +172,11 @@
 ;; ;;               (lambda () (subword-mode 1)))
 ;; (add-hook 'c-mode-common-hook 'c-subword-mode)
 
+;; groovy, java, C and related modes
+(defun my-c-mode-hook ()
+   (setq indent-tabs-mode nil
+         c-basic-offset 4))
+(add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
 ;; Key bindings
 (global-set-key [(meta g)] 'goto-line)
