@@ -1,14 +1,14 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2014-01-03 19:55:03>
+;; Time-stamp: <2014-01-04 00:16:35 renaud>
 
 (global-unset-key (kbd "C-c C-t"))
 (global-unset-key (kbd "C-t"))
 
 (load-theme 'deeper-blue 'NO-CONFIRM)
 
-(add-to-list 'load-path (expand-file-name "~/.emacs.d"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp-init"))
 
 ;;(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -31,9 +31,6 @@
 (if (eq window-system 'x)
     (add-hook 'emacs-startup-hook 'fullscreen)
 )
-
-(require 'autopair)
-(autopair-global-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful before-save-hook bindings
@@ -100,6 +97,9 @@
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 (progn (cd "~/.emacs.d/site-lisp")
        (normal-top-level-add-subdirs-to-load-path))
+
+(require 'autopair)
+(autopair-global-mode)
 
 (require 'xmltok)
 (require 'init-ido)
