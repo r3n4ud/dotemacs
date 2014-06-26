@@ -1,7 +1,6 @@
 ;; -*- coding: utf-8 -*-
 ;; Emacs main configuration file
 ;; Renaud AUBIN
-;; Time-stamp: <2014-01-04 00:16:35 renaud>
 
 (global-unset-key (kbd "C-c C-t"))
 (global-unset-key (kbd "C-t"))
