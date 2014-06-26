@@ -119,6 +119,9 @@
 (require 'feature-mode)
 (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
 
+(require 'haml-mode)
+(require 'coffee-mode)
+
 ;; ;; nXhtml
 ;; (load "~/.emacs.d/site-lisp/nxhtml/autostart.el")
 ;; (setq
