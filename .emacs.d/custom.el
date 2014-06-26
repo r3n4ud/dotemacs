@@ -25,7 +25,9 @@
  '(show-paren-mode t)
  '(time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
  '(tool-bar-mode nil)
- '(whitespace-line-column 100))
+ '(whitespace-line-column 100)
+ '(nxml-slash-auto-complete-flag t)
+ )
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -218,3 +218,39 @@
 
 (setq default-directory "/home/renaud")
 (put 'upcase-region 'disabled nil)
+
+
+(defun nxml-compute-indent-in-start-tag (pos)
+  "Return the indent for a line that starts inside a start-tag.
+Also for a line that starts inside an empty element.
+POS is the position of the first non-whitespace character of the line.
+This expects the xmltok-* variables to be set up as by `xmltok-forward'."
+  (let ((value-boundary (nxml-attribute-value-boundary pos))
+        (off 0))
+    (if value-boundary
+        ;; inside an attribute value
+        (let ((value-start (car value-boundary)))
+          (goto-char pos)
+          (forward-line -1)
+          (if (< (point) value-start)
+              (goto-char value-start)
+            (back-to-indentation)))
+      ;; outside an attribute value
+      (goto-char (+ pos 1))
+      (back-to-indentation)
+      ;; (while (and (= (forward-line -1) 0)
+      ;;             (nxml-attribute-value-boundary (point))))
+      ;; (cond ((<= (point) xmltok-start)
+      ;;        (goto-char xmltok-start)
+      ;;        (setq off nxml-attribute-indent)
+      ;;        (let ((atts (xmltok-merge-attributes)))
+      ;;          (when atts
+      ;;            (let* ((att (car atts))
+      ;;                   (start (xmltok-attribute-name-start att)))
+      ;;              (when (< start pos)
+      ;;                (goto-char start)
+      ;;                (setq off 0))))))
+      ;;       (t
+      ;;        (back-to-indentation)))
+      )
+    (+ (current-column) off)))
