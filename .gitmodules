@@ -62,3 +62,6 @@
 [submodule ".emacs.d/site-lisp/autopair"]
 	path = .emacs.d/site-lisp/autopair
 	url = https://github.com/capitaomorte/autopair.git
+[submodule ".emacs.d/site-lisp/haml-mode"]
+	path = .emacs.d/site-lisp/haml-mode
+	url = https://github.com/nex3/haml-mode.git
