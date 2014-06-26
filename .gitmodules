@@ -38,6 +38,7 @@
 [submodule "install/auto-complete"]
         path = install/auto-complete
         url = https://github.com/auto-complete/auto-complete.git
+        ignore = dirty
 [submodule ".emacs.d/site-lisp/yasnippet"]
         path = .emacs.d/site-lisp/yasnippet
         url = https://github.com/capitaomorte/yasnippet.git
@@ -45,26 +46,27 @@
         path = .emacs.d/site-lisp/git-gutter
         url = https://github.com/syohex/emacs-git-gutter.git
 [submodule ".emacs.d/site-lisp/groovy"]
-	path = .emacs.d/site-lisp/groovy
-	url = https://github.com/russel/Emacs-Groovy-Mode.git
+        path = .emacs.d/site-lisp/groovy
+        url = https://github.com/russel/Emacs-Groovy-Mode.git
 [submodule ".emacs.d/site-lisp/git-modes"]
-	path = .emacs.d/site-lisp/git-modes
-	url = https://github.com/magit/git-modes.git
+        path = .emacs.d/site-lisp/git-modes
+        url = https://github.com/magit/git-modes.git
 [submodule ".emacs.d/site-lisp/emacs-epc"]
-	path = .emacs.d/site-lisp/emacs-epc
-	url = https://github.com/kiwanami/emacs-epc.git
+        path = .emacs.d/site-lisp/emacs-epc
+        url = https://github.com/kiwanami/emacs-epc.git
 [submodule ".emacs.d/site-lisp/emacs-ctable"]
-	path = .emacs.d/site-lisp/emacs-ctable
-	url = https://github.com/kiwanami/emacs-ctable.git
+        path = .emacs.d/site-lisp/emacs-ctable
+        url = https://github.com/kiwanami/emacs-ctable.git
 [submodule ".emacs.d/site-lisp/emacs-deferred"]
-	path = .emacs.d/site-lisp/emacs-deferred
-	url = https://github.com/kiwanami/emacs-deferred.git
+        path = .emacs.d/site-lisp/emacs-deferred
+        url = https://github.com/kiwanami/emacs-deferred.git
 [submodule ".emacs.d/site-lisp/autopair"]
-	path = .emacs.d/site-lisp/autopair
-	url = https://github.com/capitaomorte/autopair.git
+        path = .emacs.d/site-lisp/autopair
+        url = https://github.com/capitaomorte/autopair.git
+        ignore = dirty
 [submodule ".emacs.d/site-lisp/haml-mode"]
-	path = .emacs.d/site-lisp/haml-mode
-	url = https://github.com/nex3/haml-mode.git
+        path = .emacs.d/site-lisp/haml-mode
+        url = https://github.com/nex3/haml-mode.git
 [submodule ".emacs.d/site-lisp/coffee-mode"]
-	path = .emacs.d/site-lisp/coffee-mode
-	url = https://github.com/defunkt/coffee-mode.git
+        path = .emacs.d/site-lisp/coffee-mode
+        url = https://github.com/defunkt/coffee-mode.git
