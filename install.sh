@@ -42,3 +42,22 @@ cd .emacs.d/site-lisp/autopair
 emacs -Q -L . -batch -f batch-byte-compile autopair.el
 
 cd $INITIAL_DIR
+cd .emacs.d/site-lisp/emacs-web-server
+emacs -Q -L . -batch -f batch-byte-compile simple-httpd.el
+
+cd $INITIAL_DIR
+cd .emacs.d/site-lisp/skewer-mode
+make compile
+
+cd $INITIAL_DIR
+cd .emacs.d/site-lisp/js2-mode
+make all
+
+cd $INITIAL_DIR
+cd .emacs.d/site-lisp/ac-js2
+emacs -Q -L . -L ../js2-mode -L ../skewer-mode -L ../emacs-web-server -batch -f batch-byte-compile ac-js2.el
+
+cd $INITIAL_DIR
+cd .emacs.d/site-lisp/nginx-mode
+emacs -Q -L . -batch -f batch-byte-compile nginx-mode.el
+cd $INITIAL_DIR

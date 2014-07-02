@@ -108,6 +108,7 @@
 (require 'init-auto-insert)
 (require 'init-markdown)
 (require 'init-groovy)
+(require 'init-js)
 
 ;; Ruby and rails configuration
 
@@ -121,6 +122,7 @@
 
 (require 'haml-mode)
 (require 'coffee-mode)
+(require 'nginx-mode)
 
 ;; ;; nXhtml
 ;; (load "~/.emacs.d/site-lisp/nxhtml/autostart.el")

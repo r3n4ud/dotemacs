@@ -70,3 +70,21 @@
 [submodule ".emacs.d/site-lisp/coffee-mode"]
         path = .emacs.d/site-lisp/coffee-mode
         url = https://github.com/defunkt/coffee-mode.git
+[submodule ".emacs.d/site-lisp/js2-mode"]
+        path = .emacs.d/site-lisp/js2-mode
+        url = https://github.com/mooz/js2-mode.git
+[submodule ".emacs.d/site-lisp/emacs-web-server"]
+        path = .emacs.d/site-lisp/emacs-web-server
+        url = https://github.com/skeeto/emacs-web-server.git
+[submodule ".emacs.d/site-lisp/skewer-mode"]
+        path = .emacs.d/site-lisp/skewer-mode
+        url = https://github.com/skeeto/skewer-mode.git
+        ignore = dirty
+[submodule ".emacs.d/site-lisp/ac-js2"]
+        path = .emacs.d/site-lisp/ac-js2
+        url = https://github.com/ScottyB/ac-js2.git
+        ignore = dirty
+[submodule ".emacs.d/site-lisp/nginx-mode"]
+        path = .emacs.d/site-lisp/nginx-mode
+        url = https://github.com/ajc/nginx-mode.git
+        ignore = dirty
