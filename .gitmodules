@@ -88,3 +88,6 @@
         path = .emacs.d/site-lisp/nginx-mode
         url = https://github.com/ajc/nginx-mode.git
         ignore = dirty
+[submodule ".emacs.d/site-lisp/toml-mode"]
+        path = .emacs.d/site-lisp/toml-mode
+        url = https://github.com/dryman/toml-mode.el.git

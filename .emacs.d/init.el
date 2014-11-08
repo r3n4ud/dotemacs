@@ -109,6 +109,8 @@
 (require 'init-markdown)
 (require 'init-groovy)
 (require 'init-js)
+(require 'init-toml)
+(require 'init-rust)
 
 ;; Ruby and rails configuration
 

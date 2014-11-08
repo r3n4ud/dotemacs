@@ -7,6 +7,7 @@
  '(backup-directory-alist (quote (("." . "~/.emacs-backup-files/"))))
  '(browse-url-browser-function (quote browse-url-generic))
  '(browse-url-generic-program (executable-find "chromium"))
+ '(coffee-tab-width 2)
  '(column-number-mode t)
  '(diary-file "~/org/diary")
  '(display-time-24hr-format t)
@@ -21,13 +22,12 @@
  '(indicate-buffer-boundaries (quote left))
  '(indicate-empty-lines t)
  '(inhibit-startup-screen t)
+ '(nxml-slash-auto-complete-flag t)
  '(require-final-newline (quote visit-save))
  '(show-paren-mode t)
  '(time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
  '(tool-bar-mode nil)
- '(whitespace-line-column 100)
- '(nxml-slash-auto-complete-flag t)
- )
+ '(whitespace-line-column 100))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
