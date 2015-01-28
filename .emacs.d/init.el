@@ -260,3 +260,6 @@ This expects the xmltok-* variables to be set up as by `xmltok-forward'."
       ;;        (back-to-indentation)))
       )
     (+ (current-column) off)))
+
+(load "auctex.el" nil t t)
+(load "preview-latex.el" nil t t)
