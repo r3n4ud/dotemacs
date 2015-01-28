@@ -88,3 +88,6 @@
 [submodule ".emacs.d/site-lisp/toml-mode"]
         path = .emacs.d/site-lisp/toml-mode
         url = https://github.com/dryman/toml-mode.el.git
+[submodule ".emacs.d/site-lisp/groovy"]
+	path = .emacs.d/site-lisp/groovy
+	url = https://github.com/Groovy-Emacs-Modes/groovy-emacs-modes.git
