@@ -114,10 +114,20 @@
 
 ;; Ruby and rails configuration
 
+(setq initial-major-mode 'ruby-mode)
+(setq initial-scratch-message nil)
+
 ;; rinari
 (require 'rinari)
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+
+(autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby process" t)
+(autoload 'inf-ruby-setup-keybindings "inf-ruby" "" t)
+(eval-after-load 'ruby-mode
+  '(add-hook 'ruby-mode-hook 'inf-ruby-setup-keybindings))
+;; (autoload 'inf-ruby-minor-mode "inf-ruby" "Run an inferior Ruby process" t)
+;; (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
 
 (require 'feature-mode)
 (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
