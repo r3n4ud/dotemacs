@@ -170,6 +170,9 @@
 (require 'yaml-mode)
 (add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
 
+(require 'dockerfile-mode)
+(add-to-list 'auto-mode-alist '("Dockerfile\\'" . dockerfile-mode))
+
 ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
 ;; (require 'ajc-java-complete-config)
 ;; (add-hook 'java-mode-hook 'ajc-java-complete-mode)

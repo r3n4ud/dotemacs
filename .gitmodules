@@ -91,3 +91,6 @@
 [submodule ".emacs.d/site-lisp/groovy"]
 	path = .emacs.d/site-lisp/groovy
 	url = https://github.com/Groovy-Emacs-Modes/groovy-emacs-modes.git
+[submodule ".emacs.d/site-lisp/dockerfile-mode"]
+	path = .emacs.d/site-lisp/dockerfile-mode
+	url = https://github.com/spotify/dockerfile-mode.git
