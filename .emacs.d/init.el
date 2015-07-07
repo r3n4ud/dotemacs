@@ -280,3 +280,5 @@ This expects the xmltok-* variables to be set up as by `xmltok-forward'."
 
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
+
+(require 'cmake-mode)
