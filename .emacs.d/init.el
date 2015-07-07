@@ -208,6 +208,10 @@
           (lambda()
             (local-unset-key (kbd "C-d"))))
 
+(add-hook 'c-mode-hook
+          (lambda()
+            (local-unset-key (kbd "C-d"))))
+
 ;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
 (defun duplicate-line()
   (interactive)
