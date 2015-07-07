@@ -10,7 +10,8 @@
 (setq ido-default-buffer-method 'selected-window)
 
 ;; Completion in M-x
-;; (smex-initialize)
-;; (global-set-key "\M-x" 'smex)
+(require 'smex)
+(smex-initialize)
+(global-set-key "\M-x" 'smex)
 
 (provide 'init-ido)
