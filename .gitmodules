@@ -4,3 +4,6 @@
 [submodule ".emacs.d/site-lisp/custom-java-style"]
         path = .emacs.d/site-lisp/custom-java-style
         url = https://github.com/nibua-r/custom-java-style.git
+[submodule ".emacs.d/site-lisp/use-package"]
+        path = .emacs.d/site-lisp/use-package
+        url = https://github.com/jwiegley/use-package.git
