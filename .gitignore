@@ -3,3 +3,6 @@
 .emacs.d/ido.last
 .emacs.d/recentf
 .emacs.d/smex-items
+.emacs.d/elpa
+.emacs.d/irony
+.emacs.d/network-security.data

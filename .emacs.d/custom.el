@@ -25,6 +25,9 @@
  '(inhibit-startup-screen t)
  '(iswitchb-mode nil)
  '(nxml-slash-auto-complete-flag t)
+ '(package-selected-packages
+   (quote
+    (cmake-font-lock yasnippet company-auctex lua-mode yaml-mode racer cargo rust-mode use-package undo-tree smex smartparens magit git-gutter company-quickhelp)))
  '(require-final-newline (quote visit-save))
  '(show-paren-mode t)
  '(time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
