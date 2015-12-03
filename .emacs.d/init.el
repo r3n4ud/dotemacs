@@ -212,11 +212,6 @@
 ;; Allow the same buffer to be open in different frames
 (setq ido-default-buffer-method 'selected-window)
 
-;; Completion in M-x
-(require 'smex)
-(smex-initialize)
-(global-set-key "\M-x" 'smex)
-
 (use-package cmake-font-lock :ensure t)
 
 ;; Completion in M-x
