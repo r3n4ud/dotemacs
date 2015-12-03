@@ -241,7 +241,7 @@
 (define-auto-insert "\.rb" "ruby-template.rb")
 
 (use-package markdown-mode   :ensure t)
-(use-package toml-mode  :ensure t)
+;; (use-package toml-mode  :ensure t)
 
 (use-package groovy-mode
   :ensure t)
