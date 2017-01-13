@@ -457,3 +457,4 @@
 
 (setq initial-major-mode 'ruby-mode)
 (setq initial-scratch-message nil)
+(put 'downcase-region 'disabled nil)
