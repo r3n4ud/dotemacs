@@ -146,6 +146,11 @@
 ;;                          "~/.emacs.d/site-lisp/yasnippet/snippets"))
 (yas/global-mode 1)
 
+(use-package flycheck
+  :ensure t)
+
+(global-flycheck-mode)
+
 (use-package company
   :config (add-hook 'after-init-hook 'global-company-mode)
   :ensure t)
@@ -187,6 +192,11 @@
             '(add-to-list 'company-backends 'company-c-headers))
   :ensure t)
 
+(use-package flycheck-irony
+  :ensure t)
+
+(eval-after-load 'flycheck
+  '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
 
 ;; (require 'xmltok)
 ;; (require 'init-ido)
