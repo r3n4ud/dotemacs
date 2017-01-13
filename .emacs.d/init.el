@@ -364,6 +364,10 @@
           (lambda()
             (local-unset-key (kbd "C-d"))))
 
+(add-hook 'c++-mode-hook
+          (lambda()
+            (local-unset-key (kbd "C-d"))))
+
 (add-hook 'c-mode-hook
           (lambda()
             (local-unset-key (kbd "C-d"))))
