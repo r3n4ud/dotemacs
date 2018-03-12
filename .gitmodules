@@ -7,3 +7,6 @@
 [submodule ".emacs.d/site-lisp/use-package"]
         path = .emacs.d/site-lisp/use-package
         url = https://github.com/jwiegley/use-package.git
+[submodule ".emacs.d/site-lisp/flycheck-google-cpplint"]
+	path = .emacs.d/site-lisp/flycheck-google-cpplint
+	url = https://github.com/flycheck/flycheck-google-cpplint.git

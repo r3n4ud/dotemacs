@@ -4,6 +4,12 @@
 
 (require 'package)
 
+;; https://www.emacswiki.org/emacs/LoadPath
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp-init"))
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+(progn (cd "~/.emacs.d/site-lisp")
+       (normal-top-level-add-subdirs-to-load-path))
+
 ;; Initialize repo
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
@@ -19,9 +25,9 @@
       (package-refresh-contents)
       (package-install 'use-package)))
 
-;; (add-to-list 'load-path "~/.emacs.d/site-lisp")
-;; (progn (cd "~/.emacs.d/site-lisp")
-;;        (normal-top-level-add-subdirs-to-load-path))
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+(setq mu4e-maildir "/home/renaud/Mail")
 
 (require 'use-package)
 
@@ -29,8 +35,6 @@
 (global-unset-key (kbd "C-t"))
 
 (load-theme 'deeper-blue 'NO-CONFIRM)
-
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp-init"))
 
 ;;(if (fboundp 'scroll-bar-mode) (scroll-bar--mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -136,8 +140,8 @@
   :config (global-git-gutter-mode 1)
   :ensure t)
 
-(use-package yasnippet
-  :ensure t)
+(use-package yasnippet :ensure t)
+(use-package yasnippet-snippets :ensure t)
 
 ;; Don't use tab as trigger key
 (setq yas/trigger-key (kbd "C-c C-t"))
@@ -154,9 +158,6 @@
 (use-package company
   :config (add-hook 'after-init-hook 'global-company-mode)
   :ensure t)
-
-(global-set-key (kbd "C-c y") 'company-yasnippet)
-
 
 (use-package company-quickhelp
   :config (company-quickhelp-mode 1)
@@ -192,11 +193,63 @@
             '(add-to-list 'company-backends 'company-c-headers))
   :ensure t)
 
+(add-to-list 'company-c-headers-path-system "/usr/include/c++/7/")
+
+(global-set-key (kbd "C-c y") 'company-yasnippet)
+;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
+;; Add yasnippet support for all company backends
+;; https://github.com/syl20bnr/spacemacs/pull/179
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            '(:with company-yasnippet))
+    ))
+
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+(use-package company-racer
+  :ensure t)
+(with-eval-after-load 'company
+  (add-to-list 'company-backends 'company-racer))
+
 (use-package flycheck-irony
   :ensure t)
 
 (eval-after-load 'flycheck
   '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+
+(use-package google-c-style
+  :ensure t)
+
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+;; If you want the RETURN key to go to the next line and space over
+;; to the right place, add this to your .emacs right after the load-file:
+;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
+
+;;(require 'flycheck-google-cpplint)
+;; (use-package flycheck-google-cpplint
+;;   :ensure t)
+
+(eval-after-load 'flycheck
+  '(progn
+     (require 'flycheck-google-cpplint)
+     ;; Add Google C++ Style checker.
+     ;; In default, syntax checked by Clang and Cppcheck.
+     (flycheck-add-next-checker 'c/c++-cppcheck
+                                '(warning . c/c++-googlelint))))
+
+(custom-set-variables
+ '(flycheck-c/c++-googlelint-executable "/usr/local/bin/cpplint"))
+
+(custom-set-variables
+;; '(flycheck-googlelint-verbose "3")
+;; '(flycheck-googlelint-filter "-whitespace,+whitespace/braces")
+;; '(flycheck-googlelint-root "project/src")
+ '(flycheck-googlelint-linelength "100"))
 
 ;; (require 'xmltok)
 ;; (require 'init-ido)
@@ -234,24 +287,56 @@
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
+(use-package markdown-mode   :ensure t)
+(use-package toml-mode       :ensure t)
+
 (use-package rust-mode :ensure t)
-;; (use-package cargo     :ensure t)
+(setq rust-format-on-save t)
+
+(use-package cargo     :ensure t)
+(add-hook 'rust-mode-hook 'cargo-minor-mode)
+(add-hook 'toml-mode-hook 'cargo-minor-mode)
+
 (use-package racer     :ensure t)
-(setq racer-cmd "/home/renaud/.multirust/toolchains/beta/cargo/bin/racer")
-(setq racer-rust-src-path "/usr/local/rustc-beta/src")
+(setq racer-cmd "/home/renaud/.cargo/bin/racer")
+;; (setq racer-rust-src-path "/usr/local/src/rust/src")
 (add-hook 'rust-mode-hook #'racer-mode)
 (add-hook 'racer-mode-hook #'eldoc-mode)
+(add-hook 'racer-mode-hook #'company-mode)
+
+(require 'rust-mode)
+(define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+(setq company-tooltip-align-annotations t)
+
+(use-package flycheck-rust     :ensure t)
+(add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
 
 ;; built-in
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
 
 (auto-insert-mode)
-(setq auto-insert-directory "~/.emacs.d/site-lisp/auto-insert-templates/")
-(define-auto-insert "\.rb" "ruby-template.rb")
+(setq auto-insert-query nil) ;;; If you don't want to be prompted before insertion
+(setq auto-insert-automatically t)
 
-(use-package markdown-mode   :ensure t)
-;; (use-package toml-mode  :ensure t)
+(defun reno/autoinsert-yas-expand()
+  "Replace text in yasnippet template."
+  (yas/expand-snippet (buffer-string) (point-min) (point-max)))
+
+(custom-set-variables
+ '(auto-insert 'other)
+ '(auto-insert-directory "~/.emacs.d/site-lisp/auto-insert-templates/")
+ '(auto-insert-alist '((("\\.\\([H]\\|hh\\|hpp\\)\\'" . "C++ header") . ["template.hpp" reno/autoinsert-yas-expand])
+                       (("\\.\\([C]\\|cc\\|cpp\\)\\'" . "C++ source") . ["template.cpp" reno/autoinsert-yas-expand])
+                       (("\\.rb\\'" . "Ruby script") . ["template.rb" reno/autoinsert-yas-expand])
+;                       (("\\.sh\\'" . "Shell script") . ["template.sh" my/autoinsert-yas-expand])
+;                       (("\\.el\\'" . "Emacs Lisp") . ["template.el" my/autoinsert-yas-expand])
+;                       (("\\.pl\\'" . "Perl script") . ["template.pl" my/autoinsert-yas-expand])
+;                       (("\\.pm\\'" . "Perl module") . ["template.pm" my/autoinsert-yas-expand])
+;                       (("\\.py\\'" . "Python script") . ["template.py" my/autoinsert-yas-expand])
+;                       (("[mM]akefile\\'" . "Makefile") . ["Makefile" my/autoinsert-yas-expand])
+;                       (("\\.tex\\'" . "TeX/LaTeX") . ["template.tex" my/autoinsert-yas-expand])
+                     )))
 
 (use-package groovy-mode
   :ensure t)
@@ -281,15 +366,15 @@
 
 (add-hook 'ruby-mode-hook 'eldoc-mode)
 (add-hook 'enh-ruby-mode-hook 'eldoc-mode)
-(add-hook 'enh-ruby-mode-hook 'robe-mode)
+;; (add-hook 'enh-ruby-mode-hook 'robe-mode)
 (add-hook 'enh-ruby-mode-hook 'yard-mode)
 
-(use-package robe           :ensure t)
+;; ;; (use-package robe           :ensure t)
 
-(eval-after-load 'company
-  '(push 'company-robe company-backends))
+;; (eval-after-load 'company
+;;   '(push 'company-robe company-backends))
 
-(add-hook 'after-init-hook 'inf-ruby-switch-setup)
+;; (add-hook 'after-init-hook 'inf-ruby-switch-setup)
 
 
 ;; ;; ;; rinari
@@ -339,6 +424,24 @@
   :config (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   :ensure t)
 
+(use-package ess
+  :ensure t
+  :defer t
+;;  :pre-load (setq ess-R-smart-operators t) ; enables smart commas too
+  :init (autoload 'R-mode "ess-site"
+          "Major mode for editing R source.  See `ess-mode' for more help."
+          t)
+  :config (progn
+            (eval-after-load 'ess-smart-equals
+              '(progn
+                 (add-hook 'ess-mode-hook 'ess-smart-equals-mode)
+                 (add-hook 'inferior-ess-mode-hook 'ess-smart-equals-mode)))
+            (use-package ess-smart-equals :ensure t)))
+
+(setq ess-R-smart-operators t) ; enables smart commas too
+;;(use-package ess-R-data-view   :ensure t)
+(use-package ess-view   :ensure t)
+
 ;; ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
 ;; ;; (require 'ajc-java-complete-config)
 ;; ;; (add-hook 'java-mode-hook 'ajc-java-complete-mode)
@@ -358,10 +461,10 @@
 ;; ;; (add-hook 'c-mode-common-hook 'c-subword-mode)
 
 ;; groovy, java, C and related modes
-(defun my-c-mode-hook ()
-  (setq indent-tabs-mode nil
-        c-basic-offset 4))
-(add-hook 'c-mode-common-hook 'my-c-mode-hook)
+;; (defun my-c-mode-hook ()
+;;   (setq indent-tabs-mode nil
+;;         c-basic-offset 4))
+;; (add-hook 'c-mode-common-hook 'my-c-mode-hook)
 
 ;; Key bindings
 (global-set-key [(meta g)] 'goto-line)
@@ -393,10 +496,12 @@
   )
 (global-set-key (kbd "C-d") 'duplicate-line)
 
-;; ;; Allow access from emacsclient
-;; (require 'server)
-;; (unless (server-running-p)
-;;   (server-start))
+;; Allow access from emacsclient
+(require 'server)
+(unless (server-running-p)
+  (server-start))
+
+(add-to-list 'auto-mode-alist '("/mutt" . mail-mode))
 
 ;; Variables configured via the interactive 'customize' interface
 (setq custom-file "~/.emacs.d/custom.el")
@@ -458,3 +563,14 @@
 (setq initial-major-mode 'ruby-mode)
 (setq initial-scratch-message nil)
 (put 'downcase-region 'disabled nil)
+
+(use-package protobuf-mode    :ensure t)
+(add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
+
+(global-prettify-symbols-mode 1)
+;; (setq prettify-symbols-unprettify-at-point 'right-edge)
+;;(setq prettify-symbols-unprettify-at-point t)
+(require 'fira-code-symbol)
+
+(use-package modern-cpp-font-lock :ensure t)
+(modern-c++-font-lock-global-mode t)
