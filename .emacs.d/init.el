@@ -7,16 +7,12 @@
 ;; https://www.emacswiki.org/emacs/LoadPath
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp-init"))
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
+(add-to-list 'load-path "~/.local/share/emacs/site-lisp/mu4e/")
 (progn (cd "~/.emacs.d/site-lisp")
        (normal-top-level-add-subdirs-to-load-path))
 
-;; Initialize repo
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
 
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives
-               '("gnu" . "http://elpa.gnu.org/packages/")))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 (package-initialize)
 
@@ -24,10 +20,6 @@
     (progn
       (package-refresh-contents)
       (package-install 'use-package)))
-
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-(require 'mu4e)
-(setq mu4e-maildir "/home/renaud/Mail")
 
 (require 'use-package)
 
@@ -49,14 +41,16 @@
 ;; Turns on Auto Fill for all modes
 (setq-default auto-fill-function 'do-auto-fill)
 
-;; Start emacs in fullscreen mode in Xorg
-(defun fullscreen ()
-  (interactive)
-  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-                         '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
-(if (eq window-system 'x)
-    (add-hook 'emacs-startup-hook 'fullscreen)
-  )
+;; ;; Start emacs in fullscreen mode in Xorg
+;; (defun fullscreen ()
+;;   (interactive)
+;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+;; (if (eq window-system 'x)
+;;     (add-hook 'emacs-startup-hook 'fullscreen)
+;;   )
+
+(add-to-list 'initial-frame-alist '(fullscreen . maximized))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Useful before-save-hook bindings
@@ -166,9 +160,9 @@
 (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
 (setq company-tooltip-align-annotations t)
 
-(use-package irony
-  :ensure t)
-
+;; (use-package irony
+;;   :ensure t)
+(require 'irony)
 (add-hook 'c++-mode-hook 'irony-mode)
 (add-hook 'c-mode-hook 'irony-mode)
 (add-hook 'objc-mode-hook 'irony-mode)
@@ -298,8 +292,8 @@
 (add-hook 'toml-mode-hook 'cargo-minor-mode)
 
 (use-package racer     :ensure t)
-(setq racer-cmd "/home/renaud/.cargo/bin/racer")
-;; (setq racer-rust-src-path "/usr/local/src/rust/src")
+(setq racer-cmd "~/.cargo/bin/racer")
+(setq racer-rust-src-path "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
 (add-hook 'rust-mode-hook #'racer-mode)
 (add-hook 'racer-mode-hook #'eldoc-mode)
 (add-hook 'racer-mode-hook #'company-mode)
@@ -501,8 +495,6 @@
 (unless (server-running-p)
   (server-start))
 
-(add-to-list 'auto-mode-alist '("/mutt" . mail-mode))
-
 ;; Variables configured via the interactive 'customize' interface
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
@@ -514,7 +506,7 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(setq default-directory "/home/renaud")
+(setq default-directory "~")
 (put 'upcase-region 'disabled nil)
 
 ;; (defun nxml-compute-indent-in-start-tag (pos)
@@ -552,12 +544,10 @@
 ;;       )
 ;;     (+ (current-column) off)))
 
-;; (load "auctex.el" nil t t)
-;; (load "preview-latex.el" nil t t)
+(load "auctex.el" nil t t)
 
 ;; (use-package auctex           :ensure t)
-;; (use-package tex-site
-;;   :ensure auctex)
+;; (use-package tex-site  :ensure auctex)
 (use-package company-auctex   :ensure t)
 
 (setq initial-major-mode 'ruby-mode)
@@ -574,3 +564,17 @@
 
 (use-package modern-cpp-font-lock :ensure t)
 (modern-c++-font-lock-global-mode t)
+
+(use-package clang-format :ensure t)
+(use-package clang-format+ :ensure t)
+(add-hook 'c-mode-common-hook #'clang-format+-mode)
+
+(use-package adoc-mode :ensure t)
+
+
+(use-package csv-mode
+  :ensure t)
+
+
+(provide 'init)
+;;; init.el ends here
