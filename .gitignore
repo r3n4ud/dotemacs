@@ -11,3 +11,8 @@
 .emacs.d/ac-comphist.dat
 .emacs.d/tramp
 .emacs.d/session.*
+.emacs.d/.cache
+.emacs.d/.dap-breakpoints
+.emacs.d/.lsp-session-v1
+.emacs.d/transient
+.emacs.d/workspace
