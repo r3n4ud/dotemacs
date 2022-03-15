@@ -219,10 +219,6 @@
 
 (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-(use-package company-racer
-  :ensure t)
-(with-eval-after-load 'company
-  (add-to-list 'company-backends 'company-racer))
 
 (use-package flycheck-irony
   :ensure t)
@@ -301,13 +297,24 @@
 (use-package rust-mode :ensure t)
 (setq rust-format-on-save t)
 
-(use-package cargo     :ensure t)
+(use-package cargo     :ensure t
+  :config
+  (setenv "PATH" (concat (getenv "PATH") ":~/.cargo/bin"))
+  (setq exec-path (append exec-path '("~/.cargo/bin")))
+  )
 (add-hook 'rust-mode-hook 'cargo-minor-mode)
 (add-hook 'toml-mode-hook 'cargo-minor-mode)
 
 (use-package racer     :ensure t)
 (setq racer-cmd "~/.cargo/bin/racer")
-(setq racer-rust-src-path "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
+(setq racer-rust-src-path
+      (let* ((sysroot (string-trim
+                       (shell-command-to-string "rustc --print sysroot")))
+             (lib-path (concat sysroot "/lib/rustlib/src/rust/library"))
+              (src-path (concat sysroot "/lib/rustlib/src/rust/src")))
+        (or (when (file-exists-p lib-path) lib-path)
+            (when (file-exists-p src-path) src-path))))
+;;(setq racer-rust-src-path "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library")
 (add-hook 'rust-mode-hook #'racer-mode)
 (add-hook 'racer-mode-hook #'eldoc-mode)
 (add-hook 'racer-mode-hook #'company-mode)
@@ -318,6 +325,11 @@
 
 (use-package flycheck-rust     :ensure t)
 (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+
+(use-package company-racer
+  :ensure t)
+(with-eval-after-load 'company
+  (add-to-list 'company-backends 'company-racer))
 
 ;; built-in
 (require 'uniquify)
