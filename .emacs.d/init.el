@@ -38,6 +38,8 @@
 ;; Substitutes the call to yes-or-no-p to y-or-no-p
 (fset 'yes-or-no-p 'y-or-n-p)
 
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
 ;; Turns on Auto Fill for all modes
 (setq-default auto-fill-function 'do-auto-fill)
 
