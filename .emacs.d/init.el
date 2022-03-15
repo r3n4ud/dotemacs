@@ -389,54 +389,26 @@
 ;; (add-hook 'enh-ruby-mode-hook 'robe-mode)
 (add-hook 'enh-ruby-mode-hook 'yard-mode)
 
-;; ;; (use-package robe           :ensure t)
+(use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration))
+  :config (setq lsp-completion-enable-additional-text-edit nil))
 
-;; (eval-after-load 'company
-;;   '(push 'company-robe company-backends))
+(use-package lsp-java :ensure t :config (add-hook 'java-mode-hook 'lsp))
 
-;; (add-hook 'after-init-hook 'inf-ruby-switch-setup)
+;; optionally
+(use-package lsp-ui :ensure t :commands lsp-ui-mode)
+;; if you are helm user
+(use-package helm-lsp :ensure t :commands helm-lsp-workspace-symbol)
+;; if you are ivy user
+(use-package lsp-ivy :ensure t :commands lsp-ivy-workspace-symbol)
+(use-package lsp-treemacs :ensure t :commands lsp-treemacs-errors-list)
 
+;; optionally if you want to use debugger
+(use-package dap-mode :ensure t :after lsp-mode :config (dap-auto-configure-mode))
+(use-package dap-java :ensure nil)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
 
-;; ;; ;; rinari
-;; ;; (require 'rinari)
-;; (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-;; (add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
-
-;; (autoload 'inf-ruby "inf-ruby" "Run an inferior Ruby process" t)
-;; (autoload 'inf-ruby-setup-keybindings "inf-ruby" "" t)
-;; (eval-after-load 'ruby-mode
-;;   '(add-hook 'ruby-mode-hook 'inf-ruby-setup-keybindings))
-;; ;; (autoload 'inf-ruby-minor-mode "inf-ruby" "Run an inferior Ruby process" t)
-;; ;; (add-hook 'ruby-mode-hook 'inf-ruby-minor-mode)
-
-
-
-;; ;; ;; nXhtml
-;; ;; (load "~/.emacs.d/site-lisp/nxhtml/autostart.el")
-;; ;; (setq
-;; ;;  nxhtml-global-minor-mode t
-;; ;;  mumamo-chunk-coloring 'submode-colored
-;; ;;  nxhtml-skip-welcome t
-;; ;;  indent-region-mode t
-;; ;;  rng-nxml-auto-validate-flag nil
-;; ;;  nxml-degraded t)
-;; ;; (add-to-list 'auto-mode-alist '("\\.html\\.erb\\'" . eruby-nxhtml-mumamo-mode))
-
-;; ;; ;; Enforce nxml mode for xml file
-;; ;; (add-to-list 'auto-mode-alist '("\\.xml\\'" . auto-complete-mode))
-;; ;; (add-to-list 'auto-mode-alist '("\\.xml\\'" . nxml-mode))
-
-
-(add-to-list 'load-path "~/.emacs.d/site-lisp/custom-java-style")
-;; (progn (cd "~/.emacs.d/site-lisp")
-;;        (normal-top-level-add-subdirs-to-load-path))
-
-(require 'custom-java-style)
-(add-hook 'java-mode-hook 'custom-make-newline-indent)
-(add-hook 'java-mode-hook 'custom-set-java-style)
-(add-hook 'java-mode-hook (lambda() (local-unset-key (kbd "C-d"))))
-
-;; (require 'android-mode)
+;; optional if you want which-key integration
+(use-package which-key :ensure t :config (which-key-mode))
 
 (use-package yaml-mode        :ensure t)
 (use-package dockerfile-mode  :ensure t)
