@@ -132,6 +132,9 @@
 (use-package magit
   :ensure t)
 
+(use-package magit-lfs
+  :ensure t)
+
 (use-package git-gutter
   :config (global-git-gutter-mode 1)
   :ensure t)
