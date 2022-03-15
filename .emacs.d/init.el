@@ -490,6 +490,14 @@
 (use-package clang-format+ :ensure t)
 (add-hook 'c-mode-common-hook #'clang-format+-mode)
 
+(use-package flycheck-clang-tidy
+  :after flycheck
+  ;; :config
+  ;; (setq exec-path (append exec-path '("~/.local/clang+llvm-11.0.1-x86_64-linux-gnu-ubuntu-16.04/bin")))
+  :hook
+  (flycheck-mode . flycheck-clang-tidy-setup)
+  )
+
 (use-package adoc-mode :ensure t)
 
 
