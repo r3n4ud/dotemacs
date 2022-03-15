@@ -416,48 +416,6 @@
   :config (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
   :ensure t)
 
-(use-package ess
-  :ensure t
-  :defer t
-;;  :pre-load (setq ess-R-smart-operators t) ; enables smart commas too
-  :init (autoload 'R-mode "ess-site"
-          "Major mode for editing R source.  See `ess-mode' for more help."
-          t)
-  :config (progn
-            (eval-after-load 'ess-smart-equals
-              '(progn
-                 (add-hook 'ess-mode-hook 'ess-smart-equals-mode)
-                 (add-hook 'inferior-ess-mode-hook 'ess-smart-equals-mode)))
-            (use-package ess-smart-equals :ensure t)))
-
-(setq ess-R-smart-operators t) ; enables smart commas too
-;;(use-package ess-R-data-view   :ensure t)
-(use-package ess-view   :ensure t)
-
-;; ;; (add-to-list 'load-path "~/.emacs.d/site-lisp/ajc-java-complete/")
-;; ;; (require 'ajc-java-complete-config)
-;; ;; (add-hook 'java-mode-hook 'ajc-java-complete-mode)
-;; ;; (add-hook 'find-file-hook 'ajc-4-jsp-find-file-hook)
-
-;; ;; ;; subword mode is usefull to navigate within StringLikeThisOne
-;; ;; (subword-mode 1)
-;; ;; (add-hook 'c++-mode-hook (lambda () (subword-mode 1)))
-;; ;; (add-hook 'c-mode-common-hook (lambda () (subword-mode 1)))
-;; ;; (add-hook 'cmake-mode-hook (lambda () (subword-mode 1)))
-;; ;; (add-hook 'text-mode-hook (lambda () (subword-mode 1)))
-;; ;; (add-hook 'nxml-mode-hook (lambda () (subword-mode 1)))
-;; ;; (add-hook 'java-mode-hook (lambda () (subword-mode 1)))
-;; ;; ;; http://www.gnu.org/software/emacs/manual/html_node/ccmode/Subword-Movement.html
-;; ;; ;; (add-hook 'c-mode-common-hook
-;; ;; ;;               (lambda () (subword-mode 1)))
-;; ;; (add-hook 'c-mode-common-hook 'c-subword-mode)
-
-;; groovy, java, C and related modes
-;; (defun my-c-mode-hook ()
-;;   (setq indent-tabs-mode nil
-;;         c-basic-offset 4))
-;; (add-hook 'c-mode-common-hook 'my-c-mode-hook)
-
 ;; Key bindings
 (global-set-key [(meta g)] 'goto-line)
 ;; (global-set-key [(C-right)] 'forward-word) ;; useful for subword-mode
@@ -506,41 +464,6 @@
 
 (setq default-directory "~")
 (put 'upcase-region 'disabled nil)
-
-;; (defun nxml-compute-indent-in-start-tag (pos)
-;;   "Return the indent for a line that starts inside a start-tag.
-;; Also for a line that starts inside an empty element.
-;; POS is the position of the first non-whitespace character of the line.
-;; This expects the xmltok-* variables to be set up as by `xmltok-forward'."
-;;   (let ((value-boundary (nxml-attribute-value-boundary pos))
-;;         (off 0))
-;;     (if value-boundary
-;;         ;; inside an attribute value
-;;         (let ((value-start (car value-boundary)))
-;;           (goto-char pos)
-;;           (forward-line -1)
-;;           (if (< (point) value-start)
-;;               (goto-char value-start)
-;;             (back-to-indentation)))
-;;       ;; outside an attribute value
-;;       (goto-char (+ pos 1))
-;;       (back-to-indentation)
-;;       ;; (while (and (= (forward-line -1) 0)
-;;       ;;             (nxml-attribute-value-boundary (point))))
-;;       ;; (cond ((<= (point) xmltok-start)
-;;       ;;        (goto-char xmltok-start)
-;;       ;;        (setq off nxml-attribute-indent)
-;;       ;;        (let ((atts (xmltok-merge-attributes)))
-;;       ;;          (when atts
-;;       ;;            (let* ((att (car atts))
-;;       ;;                   (start (xmltok-attribute-name-start att)))
-;;       ;;              (when (< start pos)
-;;       ;;                (goto-char start)
-;;       ;;                (setq off 0))))))
-;;       ;;       (t
-;;       ;;        (back-to-indentation)))
-;;       )
-;;     (+ (current-column) off)))
 
 (load "auctex.el" nil t t)
 
