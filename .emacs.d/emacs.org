@@ -1,0 +1,1063 @@
+#+title: Emacs Configuration
+#+PROPERTY: header-args:emacs-lisp :tangle ./init.el :mkdirp yes
+
+* Welcome!
+
+This is my emacs configuration mixed with the [[https://github.com/daviwil/emacs-from-scratch/blob/master/Emacs.org][*Emacs from Scratch*]] way to document and generate the
+configuration from a Org Mode document.  This file generates [[file:init.el][init.el]] which can be loaded by Emacs at
+startup. To generate [[file:init.el][init.el]], use M-x org-babel-tangle.
+
+#+begin_src emacs-lisp
+
+  ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
+  ;;       in Emacs and init.el will be generated automatically!
+
+  ;; You will most likely need to adjust this font size for your system!
+  (defvar r3n0/default-font-size 113)
+  (defvar r3n0/default-variable-font-size 113)
+
+  ;; Make frame transparency overridable
+  (defvar r3n0/frame-transparency '(90 . 90))
+
+#+end_src
+
+* Startup Performance
+
+#+begin_src emacs-lisp
+
+  ;; The default is 800 kilobytes.  Measured in bytes.
+  (setq gc-cons-threshold (* 50 1000 1000))
+
+  (defun r3n0/display-startup-time ()
+    (message "Emacs loaded in %s with %d garbage collections."
+             (format "%.2f seconds"
+                     (float-time
+                       (time-subtract after-init-time before-init-time)))
+             gcs-done))
+
+  (add-hook 'emacs-startup-hook #'r3n0/display-startup-time)
+
+#+end_src
+
+* Set custom backup data location
+#+begin_src emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs-backup-files/")))
+#+end_src
+
+
+* Package System Setup Part 1
+
+We need to load the package management system before our secret init!
+#+begin_src emacs-lisp
+  ;; Initialize package sources
+  (require 'package)
+#+end_src
+
+* Specific directories and secret init!
+
+#+begin_src emacs-lisp
+;; Custom local init
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp-init"))
+;; submodules
+(add-to-list 'load-path "~/.emacs.d/site-lisp")
+(progn (cd "~/.emacs.d/site-lisp") (normal-top-level-add-subdirs-to-load-path))
+
+(require 'work_custom nil 'noerror)
+#+end_src
+
+* Package System Setup Part 2
+
+Emacs has a built in package manager but it doesn't make it easy to automatically install packages
+on a new system the first time you pull down your configuration. [[https://github.com/jwiegley/use-package][use-package]] is a really helpful
+package used in this configuration to make it a lot easier to automate the installation and
+configuration of everything else we use.
+
+#+begin_src emacs-lisp
+
+  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("org" . "https://orgmode.org/elpa/")
+                           ("elpa" . "https://elpa.gnu.org/packages/")))
+
+  (package-initialize)
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+    ;; Initialize use-package on non-Linux platforms
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+#+end_src
+
+* Get the executable path from a shell session
+
+This allows to get some executable without defining the exec path ourselves.
+#+begin_src emacs-lisp
+(use-package exec-path-from-shell
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
+  (when (daemonp)
+    (exec-path-from-shell-initialize))
+  :ensure t)
+#+end_src
+
+* Automatic Package Updates
+
+The auto-package-update package helps us keep our Emacs packages up to date!  It will prompt you after a certain number of days either at startup or at a specific time of day to remind you to update your packages.
+
+You can also use =M-x auto-package-update-now= to update right now!
+
+#+begin_src emacs-lisp
+
+  (use-package auto-package-update
+    :custom
+    (auto-package-update-interval 7)
+    (auto-package-update-prompt-before-update t)
+    (auto-package-update-hide-results t)
+    :config
+    (auto-package-update-maybe)
+    (auto-package-update-at-time "09:00"))
+
+#+end_src
+
+# * Keep Folders Clean
+
+# We use the [[https://github.com/emacscollective/no-littering/blob/master/no-littering.el][no-littering]] package to keep folders where we edit files and the Emacs configuration folder clean!  It knows about a wide variety of variables for built in Emacs features as well as those from community packages so it can be much easier than finding and setting these variables yourself.
+
+# #+begin_src emacs-lisp
+
+#   ;; NOTE: If you want to move everything out of the ~/.emacs.d folder
+#   ;; reliably, set `user-emacs-directory` before loading no-littering!
+#   ;(setq user-emacs-directory "~/.cache/emacs")
+
+#   (use-package no-littering)
+
+#   ;; no-littering doesn't set this by default so we must place
+#   ;; auto save files in the same path as it uses for sessions
+#   (setq auto-save-file-name-transforms
+#         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+
+# #+end_src
+
+* Use utf-8!
+#+begin_src emacs-lisp
+  ;; Use utf-8 as default
+  (setq locale-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-selection-coding-system 'utf-8)
+  (prefer-coding-system 'utf-8)
+#+end_src
+
+* Server configuration
+#+begin_src emacs-lisp
+  ;; Allow access from emacsclient
+  (require 'server)
+  (unless (server-running-p)
+    (server-start))
+#+end_src
+
+* Spaces, newlines, boundaries and parentheses!
+
+#+begin_src emacs-lisp
+  ;; Tabs are evil!
+  (setq indent-tabs-mode nil)
+  ;; Indicates empty lines
+  (setq indicate-empty-lines t)
+  ;; Display non ambiguous buffer boundaries!
+  (setq-default indicate-buffer-boundaries 'left)
+
+  (setq require-final-newline 'visit-save)
+
+  (auto-fill-mode t)
+  ;; Turns on Auto Fill for all modes
+  (setq-default auto-fill-function 'do-auto-fill)
+
+  (setq-default fill-column 100)
+  (setq-default whitespace-line-column 100)
+
+  (show-paren-mode t)
+  (use-package smartparens
+    :config (smartparens-global-mode 1)
+    :ensure t)
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+  ;; Updates the time-stamp if present
+  (add-hook 'before-save-hook 'time-stamp)
+
+  ;; Removes trailing whitespace from the entire buffer
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+  ;; Removes tabs from the entire buffer before saving
+  (add-hook 'before-save-hook
+	    (lambda () (if (not indent-tabs-mode)
+			   (untabify (point-min) (point-max)))))
+
+  ;; Deletes all blank lines at the end of the file before saving.
+  (defun r3n0/delete-trailing-blank-lines ()
+    "Deletes all blank lines at the end of the file."
+    (interactive)
+    (save-excursion
+      (save-restriction (widen)
+			(goto-char (point-max))
+			(delete-blank-lines))))
+  (add-hook 'before-save-hook 'r3n0/delete-trailing-blank-lines)
+
+#+end_src
+
+* Timestamp format
+
+#+begin_src emacs-lisp
+  (setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
+#+end_src
+
+* Keybinding Configuration
+
+#+begin_src emacs-lisp
+  ;; Unset some keybindings
+  (global-unset-key (kbd "C-c C-t"))
+  (global-unset-key (kbd "C-t"))
+  ;; Make ESC quit prompts
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+  ;; ibuffer rules!
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+
+
+(global-set-key [(meta g)] 'goto-line)
+;; (global-set-key [(C-right)] 'forward-word) ;; useful for subword-mode
+;; (global-set-key [(C-left)] 'backward-word) ;; useful for subword-mode
+
+  ;; Completion in M-x
+  (use-package smex :config (smex-initialize) :ensure t)
+
+  (global-set-key (kbd "M-x") 'smex)
+  (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+  ;; This is your old M-x.
+  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
+#+end_src
+
+* Basic UI Configuration
+
+#+begin_src emacs-lisp
+
+  (setq inhibit-startup-screen t)
+  (setq inhibit-startup-message t)
+  (setq inhibit-startup-echo-area-message t)
+
+  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  (tool-bar-mode -1)          ; Disable the toolbar
+  ;;(tooltip-mode -1)           ; Disable tooltips
+  (set-fringe-mode 10)        ; Give some breathing room
+  ;;(menu-bar-mode -1)            ; Disable the menu bar
+
+  (column-number-mode)
+
+  ;; ;; Start emacs in fullscreen mode in Xorg
+  ;; (defun fullscreen ()
+  ;;   (interactive)
+  ;;   (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+  ;;                          '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+  ;; (if (eq window-system 'x)
+  ;;     (add-hook 'emacs-startup-hook 'fullscreen)
+  ;;   )
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+
+  ;; Substitutes the call to yes-or-no-p to y-or-no-p
+  (fset 'yes-or-no-p 'y-or-n-p)
+
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+  (ido-mode t)
+  (ido-everywhere t)
+  ;;(ido-ubiquitous-mode t)
+  (setq ido-enable-flex-matching t)
+  (setq ido-use-filename-at-point nil)
+  (setq ido-auto-merge-work-directories-length 0)
+  (setq ido-use-virtual-buffers t)
+
+  ;; Allow the same buffer to be open in different frames
+  (setq ido-default-buffer-method 'selected-window)
+
+
+
+#+end_src
+
+* Font Configuration
+
+#+begin_src emacs-lisp
+
+  (set-face-attribute 'default nil :family "Lucida Grande Mono DK" :foundry "b&h" :slant 'normal
+		      :weight 'normal :height r3n0/default-font-size :width 'semi-condensed)
+
+  (set-face-attribute 'fixed-pitch nil :family "Lucida Grande Mono DK" :foundry "b&h" :slant 'normal
+		      :weight 'normal :height r3n0/default-font-size :width 'semi-condensed)
+
+  (set-face-attribute 'variable-pitch nil :font "Lucida Sans OT" :height r3n0/default-variable-font-size :weight 'regular)
+#+end_src
+
+* Syntax highlighting
+#+begin_src emacs-lisp
+  (global-font-lock-mode t)
+#+end_src
+
+
+* UI Configuration
+
+# ** Command Log Mode
+
+# [[https://github.com/lewang/command-log-mode][command-log-mode]] is useful for displaying a panel showing each key binding you use in a panel on the right side of the frame.  Great for live streams and screencasts!
+
+# #+begin_src emacs-lisp
+
+#   (use-package command-log-mode
+#     :commands command-log-mode)
+
+# #+end_src
+
+** Color Theme
+
+[[https://github.com/hlissner/emacs-doom-themes][doom-themes]] is a great set of themes with a lot of variety and support for many different Emacs modes.  Taking a look at the [[https://github.com/hlissner/emacs-doom-themes/tree/screenshots][screenshots]] might help you decide which one you like best.  You can also run =M-x counsel-load-theme= to choose between them easily.
+
+#+begin_src emacs-lisp
+  ;; (load-theme 'deeper-blue 'NO-CONFIRM)
+  (use-package doom-themes
+    :init (load-theme 'doom-moonlight t))
+    ;; :init (load-theme 'doom-moonlight t))
+    ;; :init (load-theme 'doom-wilmersdorf t))
+    ;; :init (load-theme 'doom-dark+ t))
+    ;; :init (load-theme 'doom-nord t))
+    ;; :init (load-theme 'doom-nova t))
+    ;; :init (load-theme 'doom-oceanic-next t))
+    ;; ;; :init (load-theme 'doom-dracula t))
+    ;; ;; :init (load-theme 'doom-material t))
+    ;; ;;:init (load-theme 'doom-palenight t))
+    ;; ;; :init (load-theme 'doom-acario-dark t))
+    ;; ;; :init (load-theme 'doom-city-lights t))
+    ;; :init (load-theme 'doom-molokai t))
+    ;; :init (load-theme 'doom-outrun-electric t))
+    ;; :init (load-theme 'doom-snazzy t))
+    ;; :init (load-theme 'doom-sourcerer t))
+
+#+end_src
+
+** Better Modeline
+
+[[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.  The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more things you can enable or disable.
+
+*NOTE:* The first time you load your configuration on a new machine, you'll need to run `M-x all-the-icons-install-fonts` so that mode line icons display correctly.
+
+#+begin_src emacs-lisp
+
+(use-package all-the-icons)
+
+(use-package doom-modeline
+  :init (doom-modeline-mode 1)
+  :custom ((doom-modeline-height 20)))
+
+#+end_src
+
+** Which Key
+
+[[https://github.com/justbur/emacs-which-key][which-key]] is a useful UI panel that appears when you start pressing any key binding in Emacs to offer you all possible completions for the prefix.  For example, if you press =C-c= (hold control and press the letter =c=), a panel will appear at the bottom of the frame displaying all of the bindings under that prefix and which command they run.  This is very useful for learning the possible key bindings in the mode of your current buffer.
+
+#+begin_src emacs-lisp
+
+  (use-package which-key
+    :defer 0
+    :diminish which-key-mode
+    :config
+    (which-key-mode)
+    (setq which-key-idle-delay 1))
+
+#+end_src
+
+* Custom editing commands
+
+** Indent the whole buffer
+
+#+begin_src emacs-lisp
+  ;; Indents the whole buffer
+  (defun iwb ()
+    "Indents whole buffer."
+    (interactive)
+    (indent-region (point-min) (point-max) nil))
+#+end_src
+
+** Move the current line up and down
+
+#+begin_src emacs-lisp
+
+  ;; Move line up or down functions
+  (defun r3n0/move-line (n)
+    "Move the current line up or down by N lines."
+    (interactive "p")
+    (setq col (current-column))
+    (beginning-of-line) (setq start (point))
+    (end-of-line) (forward-char) (setq end (point))
+    (let ((line-text (delete-and-extract-region start end)))
+      (forward-line n)
+      (insert line-text)
+      ;; restore point to original column in moved line
+      (forward-line -1)
+      (forward-char col)))
+
+  (defun r3n0/move-line-up (n)
+    "Move the current line up by N lines."
+    (interactive "p")
+    (r3n0/move-line (if (null n) -1 (- n))))
+
+  (defun r3n0/move-line-down (n)
+    "Move the current line down by N lines."
+    (interactive "p")
+    (r3n0/move-line (if (null n) 1 n)))
+
+  (global-set-key (kbd "M-<up>") 'r3n0/move-line-up)
+  (global-set-key (kbd "M-<down>") 'r3n0/move-line-down)
+
+#+end_src
+
+** Duplicate the current line with C-d
+
+
+#+begin_src emacs-lisp
+
+
+
+  (global-unset-key (kbd "C-d"))
+  ;; (add-hook 'cc-mode-hook
+  ;;           (lambda()
+  ;;             (local-unset-key (kbd "C-d"))))
+
+  ;; (add-hook 'c++-mode-hook
+  ;;           (lambda()
+  ;;             (local-unset-key (kbd "C-d"))))
+
+  ;; (add-hook 'c-mode-hook
+  ;;           (lambda()
+  ;;             (local-unset-key (kbd "C-d"))))
+
+  ;; ;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
+  (defun r3n0/duplicate-line()
+    (interactive)
+    (move-beginning-of-line 1)
+    (kill-line)
+    (yank)
+    (newline)
+    (yank)
+    )
+  (global-set-key (kbd "C-d") 'r3n0/duplicate-line)
+
+#+end_src
+
+* Undo tree
+
+#+begin_src emacs-lisp
+
+   ;; those bindings need to by replaced...
+   (use-package undo-tree
+     :init (global-undo-tree-mode 1)
+     :bind (("C-c j" . undo-tree-undo)
+	    ("C-c k" . undo-tree-redo)
+	    ("C-c l" . undo-tree-switch-branch)
+	    ("C-c ;" . undo-tree-visualize))
+     :ensure t)
+
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs-backup-files/")))
+#+end_src
+
+* Auto-tangle Configuration Files
+
+This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
+
+#+begin_src emacs-lisp
+
+  ;; Automatically tangle our Emacs.org config file when we save it
+  (defun r3n0/org-babel-tangle-config ()
+    (when (string-equal (file-name-directory (buffer-file-name))
+                        (expand-file-name user-emacs-directory))
+      ;; Dynamic scoping to the rescue
+      (let ((org-confirm-babel-evaluate nil))
+        (org-babel-tangle))))
+
+  (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'r3n0/org-babel-tangle-config)))
+
+#+end_src
+
+* Parens
+
+#+begin_src emacs-lisp
+
+
+
+#+end_src
+
+
+* Git configuration
+
+[[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
+
+#+begin_src emacs-lisp
+
+  (use-package magit :ensure t
+  ;;   :commands magit-status
+  ;;   :custom
+  ;;   (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  )
+
+  (setq git-commit-fill-column 72
+	git-commit-summary-max-length 51
+	git-commit-style-convention-checks '(non-empty-second-line overlong-summary-line)
+        git-commit-setup-hook '(git-commit-save-message git-commit-setup-changelog-support git-commit-turn-on-auto-fill git-commit-turn-on-flyspell git-commit-propertize-diff with-editor-usage-message)
+  )
+
+  ;; ;;
+  ;; NOTE: Make sure to configure a GitHub token before using this package!
+  ;; ;; - https://magit.vc/manual/forge/Token-Creation.html#Token-Creation
+  ;; ;; - https://magit.vc/manual/ghub/Getting-Started.html#Getting-Started
+  ;; (use-package forge
+  ;;   :after magit)
+
+  (use-package magit-lfs :ensure t)
+
+  (use-package git-gutter :config (global-git-gutter-mode 1) :ensure t)
+
+#+end_src
+
+
+* Load basic completion and snippets support
+
+#+begin_src emacs-lisp
+  (use-package yasnippet :ensure t)
+  (use-package yasnippet-snippets :ensure t)
+
+  ;; Don't use tab as trigger key
+  (setq yas/trigger-key (kbd "C-c C-t"))
+
+  (push '"~/.emacs.d/site-lisp/snippets" yas/snippet-dirs)
+  (yas/global-mode 1)
+
+  (use-package flycheck
+    :config (global-flycheck-mode)
+    :ensure t)
+
+  (use-package company
+    :config (add-hook 'after-init-hook 'global-company-mode)
+    :ensure t)
+  ;; With use-package:
+  (use-package company-box
+    :hook (company-mode . company-box-mode)
+    :ensure t)
+
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+  (setq company-tooltip-align-annotations t)
+
+  ;; Trigger completion immediately.
+  (setq company-idle-delay 0)
+
+  ;; Number the candidates (use M-1, M-2 etc to select completions).
+  (setq company-show-numbers t)
+
+#+end_src
+
+* From EFS
+** Ivy and Counsel
+
+# [[https://oremacs.com/swiper/][Ivy]] is an excellent completion framework for Emacs.  It provides a minimal yet powerful selection menu that appears when you open files, switch buffers, and for many other tasks in Emacs.  Counsel is a customized set of commands to replace `find-file` with `counsel-find-file`, etc which provide useful commands for each of the default completion commands.
+
+# [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] adds extra columns to a few of the Counsel commands to provide more information about each item.
+
+# #+begin_src emacs-lisp
+
+#   (use-package ivy
+#     :diminish
+#     :bind (("C-s" . swiper)
+#            :map ivy-minibuffer-map
+#            ("TAB" . ivy-alt-done)
+#            ("C-l" . ivy-alt-done)
+#            ("C-j" . ivy-next-line)
+#            ("C-k" . ivy-previous-line)
+#            :map ivy-switch-buffer-map
+#            ("C-k" . ivy-previous-line)
+#            ("C-l" . ivy-done)
+#            ("C-d" . ivy-switch-buffer-kill)
+#            :map ivy-reverse-i-search-map
+#            ("C-k" . ivy-previous-line)
+#            ("C-d" . ivy-reverse-i-search-kill))
+#     :config
+#     (ivy-mode 1))
+
+#   (use-package ivy-rich
+#     :after ivy
+#     :init
+#     (ivy-rich-mode 1))
+
+#   (use-package counsel
+#     :bind (("C-M-j" . 'counsel-switch-buffer)
+#            :map minibuffer-local-map
+#            ("C-r" . 'counsel-minibuffer-history))
+#     :custom
+#     (counsel-linux-app-format-function #'counsel-linux-app-format-function-name-only)
+#     :config
+#     (counsel-mode 1))
+
+# #+end_src
+
+** Helpful Help Commands
+
+[[https://github.com/Wilfred/helpful][Helpful]] adds a lot of very helpful (get it?) information to Emacs' =describe-= command buffers.  For example, if you use =describe-function=, you will not only get the documentation about the function, you will also see the source code of the function and where it gets used in other places in the Emacs configuration.  It is very useful for figuring out how things work in Emacs.
+
+#+begin_src emacs-lisp
+
+  (use-package helpful
+    :commands (helpful-callable helpful-variable helpful-command helpful-key)
+    :custom
+    (counsel-describe-function-function #'helpful-callable)
+    (counsel-describe-variable-function #'helpful-variable)
+    :bind
+    ([remap describe-function] . counsel-describe-function)
+    ([remap describe-command] . helpful-command)
+    ([remap describe-variable] . counsel-describe-variable)
+    ([remap describe-key] . helpful-key))
+
+#+end_src
+
+** IDE Features with lsp-mode
+
+*** lsp-mode
+
+We use the excellent [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to enable IDE-like functionality for many different programming languages via "language servers" that speak the [[https://microsoft.github.io/language-server-protocol/][Language Server Protocol]].  Before trying to set up =lsp-mode= for a particular language, check out the [[https://emacs-lsp.github.io/lsp-mode/page/languages/][documentation for your language]] so that you can learn which language servers are available and how to install them.
+
+The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mode='s default keybindings will be added.  I *highly recommend* using the prefix to find out what you can do with =lsp-mode= in a buffer.
+
+The =which-key= integration adds helpful descriptions of the various keys so you should be able to learn a lot just by pressing =C-c l= in a =lsp-mode= buffer and trying different things that you find there.
+
+#+begin_src emacs-lisp
+
+  (defun efs/lsp-mode-setup ()
+    (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+    (lsp-headerline-breadcrumb-mode))
+
+  (use-package lsp-mode
+    :commands (lsp lsp-deferred)
+    :hook (lsp-mode . efs/lsp-mode-setup)
+    :init
+    (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+    :config
+    (lsp-enable-which-key-integration t))
+
+#+end_src
+
+*** lsp-ui
+
+[[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] is a set of UI enhancements built on top of =lsp-mode= which make Emacs feel even more like an IDE.  Check out the screenshots on the =lsp-ui= homepage (linked at the beginning of this paragraph) to see examples of what it can do.
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-ui
+    :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-position 'bottom))
+
+#+end_src
+
+*** lsp-treemacs
+
+[[https://github.com/emacs-lsp/lsp-treemacs][lsp-treemacs]] provides nice tree views for different aspects of your code like symbols in a file, references of a symbol, or diagnostic messages (errors and warnings) that are found in your code.
+
+Try these commands with =M-x=:
+
+- =lsp-treemacs-symbols= - Show a tree view of the symbols in the current file
+- =lsp-treemacs-references= - Show a tree view for the references of the symbol under the cursor
+- =lsp-treemacs-error-list= - Show a tree view for the diagnostic messages in the project
+
+This package is built on the [[https://github.com/Alexander-Miller/treemacs][treemacs]] package which might be of some interest to you if you like to have a file browser at the left side of your screen in your editor.
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-treemacs
+    :after lsp)
+
+#+end_src
+
+*** lsp-ivy
+
+[[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]] integrates Ivy with =lsp-mode= to make it easy to search for things by name in your code.  When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code.  Results will be populated in the minibuffer so that you can find what you're looking for and jump to that location in the code upon selecting the result.
+
+Try these commands with =M-x=:
+
+- =lsp-ivy-workspace-symbol= - Search for a symbol name in the current project workspace
+- =lsp-ivy-global-workspace-symbol= - Search for a symbol name in all active project workspaces
+
+#+begin_src emacs-lisp
+
+  (use-package lsp-ivy
+    :after lsp)
+
+#+end_src
+
+*** Debugging with dap-mode
+
+[[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
+
+#+begin_src emacs-lisp
+
+  (use-package dap-mode :ensure t :after lsp-mode :config (dap-auto-configure-mode))
+    ;;  (use-package dap-mode
+    ;;    ;; Uncomment the config below if you want all UI panes to be hidden by default!
+    ;;    ;; :custom
+    ;;    ;; (lsp-enable-dap-auto-configure nil)
+    ;;    ;; :config
+    ;;    ;; (dap-ui-mode 1)
+    ;;    :commands dap-debug
+    ;;    :config
+    ;;    ;; ;; Set up Node debugging
+    ;;    ;; (require 'dap-node)
+    ;;    ;; (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+
+    ;;    ;; ;; Bind `C-c l d` to `dap-hydra` for easy access
+    ;;    ;; (general-define-key
+    ;;    ;;   :keymaps 'lsp-mode-map
+    ;;    ;;   :prefix lsp-keymap-prefix
+    ;;    ;;   "d" '(dap-hydra t :wk "debugger"))
+    ;; )
+
+#+end_src
+
+
+** Java Support
+#+begin_src emacs-lisp
+    (use-package lsp-java :ensure t :config (add-hook 'java-mode-hook 'lsp))
+    (use-package dap-java :ensure nil)
+    ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+#+end_src
+
+
+* C/C++ support
+
+#+begin_src emacs-lisp
+  ;; (use-package irony
+  ;;   :ensure t)
+  (require 'irony)
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'objc-mode-hook 'irony-mode)
+
+  ;; replace the `completion-at-point' and `complete-symbol' bindings in
+  ;; irony-mode's buffers by irony-mode's function
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
+  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+  (use-package company-irony
+    :config (eval-after-load 'company
+	      '(add-to-list 'company-backends 'company-irony))
+    :ensure t)
+
+  (use-package company-c-headers
+    :config (eval-after-load 'company
+	      '(add-to-list 'company-backends 'company-c-headers))
+    :ensure t)
+
+  (add-to-list 'company-c-headers-path-system "/opt/gcc-8.3.0/include/c++/8.3.0/")
+
+
+  (use-package flycheck-irony :ensure t)
+  (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+
+  (use-package google-c-style :ensure t)
+  (add-hook 'c-mode-common-hook 'google-set-c-style)
+  ;; If you want the RETURN key to go to the next line and space over
+  ;; to the right place, add this to your .emacs right after the load-file:
+  ;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
+
+  ;;(require 'flycheck-google-cpplint)
+  ;; (use-package flycheck-google-cpplint
+  ;;   :ensure t)
+
+  (eval-after-load 'flycheck
+    '(progn
+       (require 'flycheck-google-cpplint)
+       ;; Add Google C++ Style checker.
+       ;; In default, syntax checked by Clang and Cppcheck.
+       (flycheck-add-next-checker 'c/c++-cppcheck
+				  '(warning . c/c++-googlelint))))
+
+  (setq flycheck-c/c++-googlelint-executable "/usr/local/bin/cpplint"
+        flycheck-googlelint-linelength "100")
+  ;; (setq flycheck-googlelint-verbose "3")
+  ;; (setq flycheck-googlelint-filter "-whitespace,+whitespace/braces")
+  ;; (setq flycheck-googlelint-root "project/src")
+#+end_src
+
+* Ruby support
+#+begin_src emacs-lisp
+  (use-package inf-ruby       :ensure t)
+  (eval-after-load 'company
+    '(add-to-list 'company-backends 'company-inf-ruby))
+
+  (add-hook 'ruby-mode-hook 'eldoc-mode)
+  (add-hook 'enh-ruby-mode-hook 'eldoc-mode)
+  ;; (add-hook 'enh-ruby-mode-hook 'robe-mode)
+  (add-hook 'enh-ruby-mode-hook 'yard-mode)
+
+  (use-package enh-ruby-mode    :ensure t)
+#+end_src
+
+* Python support
+#+begin_src emacs-lisp
+
+  (exec-path-from-shell-copy-env "REQUESTS_CA_BUNDLE")
+  (use-package elpy :ensure t :config (elpy-enable))
+
+  (use-package pyenv-mode :ensure t
+    ;; :after python-mode
+    :config
+    (pyenv-mode)
+    (pyenv-mode-set "3.9.13")
+    )
+
+  (defun r3n0/pyenv-hook ()
+    "Automatically activates pyenv version if .python-version file exists."
+    (f-traverse-upwards
+     (lambda (path)
+       (let ((pyenv-version-path (f-expand ".python-version" path)))
+	 (if (f-exists? pyenv-version-path)
+	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
+  (add-hook 'find-file-hook 'r3n0/pyenv-hook)
+
+  (add-hook 'python-mode-hook
+	    (lambda ()
+	      (setq indent-tabs-mode nil)
+	      (setq tab-width 4)
+	      (setq python-indent-offset 4)))
+
+  ;; Use IPython for REPL
+  (setq python-shell-interpreter "jupyter"
+	python-shell-interpreter-args "console --simple-prompt"
+	python-shell-prompt-detect-failure-warning nil)
+  (add-to-list 'python-shell-completion-native-disabled-interpreters
+	       "jupyter")
+
+  ;; Enable Flycheck
+  (when (require 'flycheck nil t)
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+    (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+  (use-package py-autopep8
+    :hook ((python-mode) . py-autopep8-mode))
+  ;; alternative blacken
+
+  ;; Emacs IPython Notebook
+  (use-package ein :ensure t)
+
+#+end_src
+
+* Rust support
+
+#+begin_src emacs-lisp
+
+  (use-package rust-mode :ensure t)
+  (setq rust-format-on-save t)
+
+  (use-package cargo     :ensure t
+    :config
+    (setenv "PATH" (concat (getenv "PATH") ":~/.cargo/bin"))
+    (setq exec-path (append exec-path '("~/.cargo/bin")))
+    )
+  (add-hook 'rust-mode-hook 'cargo-minor-mode)
+  (add-hook 'toml-mode-hook 'cargo-minor-mode)
+
+  (use-package racer     :ensure t)
+  (setq racer-cmd "~/.cargo/bin/racer")
+  (setq racer-rust-src-path
+        (let* ((sysroot (string-trim
+                         (shell-command-to-string "rustc --print sysroot")))
+               (lib-path (concat sysroot "/lib/rustlib/src/rust/library"))
+               (src-path (concat sysroot "/lib/rustlib/src/rust/src")))
+          (or (when (file-exists-p lib-path) lib-path)
+              (when (file-exists-p src-path) src-path))))
+  ;;(setq racer-rust-src-path "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library")
+  (add-hook 'rust-mode-hook #'racer-mode)
+  (add-hook 'racer-mode-hook #'eldoc-mode)
+  (add-hook 'racer-mode-hook #'company-mode)
+
+  (require 'rust-mode)
+  (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+  (setq company-tooltip-align-annotations t)
+
+  (use-package flycheck-rust     :ensure t)
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+
+  (use-package company-racer
+    :ensure t)
+  (with-eval-after-load 'company
+    (add-to-list 'company-backends 'company-racer))
+
+#+end_src
+
+
+#+begin_src emacs-lisp
+#+end_src
+* Usefull day-to-day syntax/language support
+
+#+begin_src emacs-lisp
+
+  (use-package adoc-mode        :ensure t)
+  (use-package cmake-font-lock  :ensure t)
+  (use-package csv-mode         :ensure t)
+  (use-package dockerfile-mode  :ensure t)
+  (use-package haml-mode        :ensure t)
+  (use-package markdown-mode    :ensure t)
+  (use-package toml-mode        :ensure t)
+  (use-package yaml-mode        :ensure t)
+  (use-package yard-mode        :ensure t)
+
+  (use-package plantuml-mode    :ensure t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.puml$" . plantuml-mode))
+    (setq plantuml-default-exec-mode 'executable
+	  plantuml-indent-level 2))
+
+  (use-package coffee-mode
+    :config (setq coffee-tab-width 2)
+    :ensure t)
+
+  (use-package lua-mode
+    :config (add-to-list 'interpreter-mode-alist '("lua" . lua-mode))
+    :ensure t)
+
+  (use-package protobuf-mode
+    :config (add-to-list 'auto-mode-alist '("\\.proto$" . protobuf-mode))
+    :ensure t)
+
+  (use-package groovy-mode :ensure t)
+  (add-to-list 'auto-mode-alist '("\.groovy$" . groovy-mode))
+  (add-to-list 'auto-mode-alist '("\.gradle$" . groovy-mode))
+  (add-to-list 'interpreter-mode-alist '("groovy" . groovy-mode))
+  (add-hook 'groovy-mode-hook (lambda() (local-unset-key (kbd "C-d"))))
+
+  (use-package feature-mode
+    :config (add-to-list 'auto-mode-alist '("\.feature$" . feature-mode))
+    :ensure t)
+
+  (use-package nginx-mode
+    :config
+    (add-to-list 'auto-mode-alist '("/nginx/sites-\\(?:available\\|enabled\\)/" . nginx-mode))
+    :ensure t)
+
+#+end_src
+
+* Ensure all yasnippet/company backends are loaded
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-c y") 'company-yasnippet)
+;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
+;; Add yasnippet support for all company backends
+;; https://github.com/syl20bnr/spacemacs/pull/179
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            '(:with company-yasnippet))
+    ))
+
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+#+end_src
+
+* Remaining config. to organize
+
+#+begin_src emacs-lisp
+
+  (auto-insert-mode)
+  (setq auto-insert-query nil) ;;; If you don't want to be prompted before insertion
+  (setq auto-insert-automatically t)
+
+  (defun r3n0/autoinsert-yas-expand()
+    "Replace text in yasnippet template."
+    (yas/expand-snippet (buffer-string) (point-min) (point-max)))
+
+  (setq auto-insert 'other
+	auto-insert-directory "~/.emacs.d/site-lisp/auto-insert-templates/"
+	)
+
+  (add-to-list 'auto-insert-alist
+	       '(("\\.\\(hh\\|hpp\\)\\'" . "C++ header") . ["c++-mode/template.hpp" r3n0/autoinsert-yas-expand]))
+  (add-to-list 'auto-insert-alist
+	       '(("\\.\\(cc\\|cpp\\)\\'" . "C++ source") . ["c++-mode/template.cpp" r3n0/autoinsert-yas-expand]))
+
+  (use-package lsp-java :ensure t :config (add-hook 'java-mode-hook 'lsp))
+  (use-package dap-java :ensure nil)
+  ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+
+  (load "auctex.el" nil t t)
+
+  ;; (use-package auctex           :ensure t)
+  ;; (use-package tex-site  :ensure auctex)
+  (use-package company-auctex   :ensure t)
+
+  (setq initial-major-mode 'ruby-mode)
+  (setq initial-scratch-message nil)
+  (put 'downcase-region 'disabled nil)
+
+
+  (global-prettify-symbols-mode 1)
+  ;; (setq prettify-symbols-unprettify-at-point 'right-edge)
+  ;;(setq prettify-symbols-unprettify-at-point t)
+  (require 'fira-code-symbol)
+
+  (use-package modern-cpp-font-lock :ensure t)
+  (modern-c++-font-lock-global-mode t)
+
+  (use-package clang-format :ensure t)
+  (use-package clang-format+ :ensure t)
+  (add-hook 'c-mode-common-hook #'clang-format+-mode)
+
+  (use-package flycheck-clang-tidy
+    :after flycheck
+    ;; :config
+    ;; (setq exec-path (append exec-path '("~/.local/clang+llvm-11.0.1-x86_64-linux-gnu-ubuntu-16.04/bin")))
+    :hook
+    (flycheck-mode . flycheck-clang-tidy-setup)
+    )
+
+  (put 'narrow-to-region 'disabled nil)
+  (setq org-src-tab-acts-natively t)
+#+end_src
+
+* Set some defaults
+
+#+begin_src emacs-lisp
+
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file)
+
+  (setq default-directory "~")
+  (put 'upcase-region 'disabled nil)
+
+#+end_src
+
+* Runtime Performance
+
+Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
+
+#+begin_src emacs-lisp
+
+  ;; Make gc pauses faster by decreasing the threshold.
+  (setq gc-cons-threshold (* 2 1000 1000))
+
+#+end_src
