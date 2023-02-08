@@ -95,13 +95,14 @@ configuration of everything else we use.
 
 This allows to get some executable without defining the exec path ourselves.
 #+begin_src emacs-lisp
-(use-package exec-path-from-shell
-  :config
-  (when (memq window-system '(mac ns x))
-    (exec-path-from-shell-initialize))
-  (when (daemonp)
-    (exec-path-from-shell-initialize))
-  :ensure t)
+  (use-package exec-path-from-shell
+    :config
+    (when (memq window-system '(mac ns x))
+      (exec-path-from-shell-initialize))
+    (when (daemonp)
+      (exec-path-from-shell-initialize))
+    :ensure t)
+  (exec-path-from-shell-copy-env "LD_LIBRARY_PATH")
 #+end_src
 
 * Automatic Package Updates
@@ -117,6 +118,7 @@ You can also use =M-x auto-package-update-now= to update right now!
     (auto-package-update-interval 7)
     (auto-package-update-prompt-before-update t)
     (auto-package-update-hide-results t)
+    (auto-package-update-delete-old-versions t)
     :config
     (auto-package-update-maybe)
     (auto-package-update-at-time "09:00"))
@@ -329,22 +331,25 @@ You can also use =M-x auto-package-update-now= to update right now!
   ;; (load-theme 'deeper-blue 'NO-CONFIRM)
   (use-package doom-themes
     :init (load-theme 'doom-moonlight t))
-    ;; :init (load-theme 'doom-moonlight t))
-    ;; :init (load-theme 'doom-wilmersdorf t))
-    ;; :init (load-theme 'doom-dark+ t))
-    ;; :init (load-theme 'doom-nord t))
-    ;; :init (load-theme 'doom-nova t))
-    ;; :init (load-theme 'doom-oceanic-next t))
-    ;; ;; :init (load-theme 'doom-dracula t))
-    ;; ;; :init (load-theme 'doom-material t))
-    ;; ;;:init (load-theme 'doom-palenight t))
-    ;; ;; :init (load-theme 'doom-acario-dark t))
-    ;; ;; :init (load-theme 'doom-city-lights t))
-    ;; :init (load-theme 'doom-molokai t))
-    ;; :init (load-theme 'doom-outrun-electric t))
-    ;; :init (load-theme 'doom-snazzy t))
-    ;; :init (load-theme 'doom-sourcerer t))
+  ;; :init (load-theme 'doom-moonlight t))
+  ;; :init (load-theme 'doom-wilmersdorf t))
+  ;; :init (load-theme 'doom-dark+ t))
+  ;; :init (load-theme 'doom-nord t))
+  ;; :init (load-theme 'doom-nova t))
+  ;; :init (load-theme 'doom-oceanic-next t))
+  ;; ;; :init (load-theme 'doom-dracula t))
+  ;; ;; :init (load-theme 'doom-material t))
+  ;; ;;:init (load-theme 'doom-palenight t))
+  ;; ;; :init (load-theme 'doom-acario-dark t))
+  ;; ;; :init (load-theme 'doom-city-lights t))
+  ;; :init (load-theme 'doom-molokai t))
+  ;; :init (load-theme 'doom-outrun-electric t))
+  ;; :init (load-theme 'doom-snazzy t))
+  ;; :init (load-theme 'doom-sourcerer t))
 
+  (set-face-attribute 'fringe nil
+		      :foreground "dim gray"
+		      :background (face-background 'default))
 #+end_src
 
 ** Better Modeline
@@ -427,23 +432,20 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 
 #+begin_src emacs-lisp
-
-
-
   (global-unset-key (kbd "C-d"))
-  ;; (add-hook 'cc-mode-hook
-  ;;           (lambda()
-  ;;             (local-unset-key (kbd "C-d"))))
+  (add-hook 'cc-mode-hook
+	    (lambda()
+	      (local-unset-key (kbd "C-d"))))
 
-  ;; (add-hook 'c++-mode-hook
-  ;;           (lambda()
-  ;;             (local-unset-key (kbd "C-d"))))
+  (add-hook 'c++-mode-hook
+	    (lambda()
+	      (local-unset-key (kbd "C-d"))))
 
-  ;; (add-hook 'c-mode-hook
-  ;;           (lambda()
-  ;;             (local-unset-key (kbd "C-d"))))
+  (add-hook 'c-mode-hook
+	    (lambda()
+	      (local-unset-key (kbd "C-d"))))
 
-  ;; ;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
+  ;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
   (defun r3n0/duplicate-line()
     (interactive)
     (move-beginning-of-line 1)
@@ -544,7 +546,10 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
   (yas/global-mode 1)
 
   (use-package flycheck
-    :config (global-flycheck-mode)
+    :config
+    (global-flycheck-mode)
+    (setq flycheck-clang-language-standard "c++17")
+    (setq flycheck-gcc-language-standard "c++17")
     :ensure t)
 
   (use-package company
@@ -742,27 +747,12 @@ Try these commands with =M-x=:
 * C/C++ support
 
 #+begin_src emacs-lisp
-  ;; (use-package irony
-  ;;   :ensure t)
-  (require 'irony)
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'objc-mode-hook 'irony-mode)
 
-  ;; replace the `completion-at-point' and `complete-symbol' bindings in
-  ;; irony-mode's buffers by irony-mode's function
-  (defun my-irony-mode-hook ()
-    (define-key irony-mode-map [remap completion-at-point]
-      'irony-completion-at-point-async)
-    (define-key irony-mode-map [remap complete-symbol]
-      'irony-completion-at-point-async))
-  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-
-  (use-package company-irony
-    :config (eval-after-load 'company
-	      '(add-to-list 'company-backends 'company-irony))
+  (use-package eglot
     :ensure t)
+  (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
+  (add-hook 'c-mode-hook 'eglot-ensure)
+  (add-hook 'c++-mode-hook 'eglot-ensure)
 
   (use-package company-c-headers
     :config (eval-after-load 'company
@@ -770,34 +760,6 @@ Try these commands with =M-x=:
     :ensure t)
 
   (add-to-list 'company-c-headers-path-system "/opt/gcc-8.3.0/include/c++/8.3.0/")
-
-
-  (use-package flycheck-irony :ensure t)
-  (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-
-  (use-package google-c-style :ensure t)
-  (add-hook 'c-mode-common-hook 'google-set-c-style)
-  ;; If you want the RETURN key to go to the next line and space over
-  ;; to the right place, add this to your .emacs right after the load-file:
-  ;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
-
-  ;;(require 'flycheck-google-cpplint)
-  ;; (use-package flycheck-google-cpplint
-  ;;   :ensure t)
-
-  (eval-after-load 'flycheck
-    '(progn
-       (require 'flycheck-google-cpplint)
-       ;; Add Google C++ Style checker.
-       ;; In default, syntax checked by Clang and Cppcheck.
-       (flycheck-add-next-checker 'c/c++-cppcheck
-				  '(warning . c/c++-googlelint))))
-
-  (setq flycheck-c/c++-googlelint-executable "/usr/local/bin/cpplint"
-        flycheck-googlelint-linelength "100")
-  ;; (setq flycheck-googlelint-verbose "3")
-  ;; (setq flycheck-googlelint-filter "-whitespace,+whitespace/braces")
-  ;; (setq flycheck-googlelint-root "project/src")
 #+end_src
 
 * Ruby support
@@ -866,46 +828,9 @@ Try these commands with =M-x=:
 * Rust support
 
 #+begin_src emacs-lisp
-
-  (use-package rust-mode :ensure t)
-  (setq rust-format-on-save t)
-
-  (use-package cargo     :ensure t
-    :config
-    (setenv "PATH" (concat (getenv "PATH") ":~/.cargo/bin"))
-    (setq exec-path (append exec-path '("~/.cargo/bin")))
-    )
-  (add-hook 'rust-mode-hook 'cargo-minor-mode)
-  (add-hook 'toml-mode-hook 'cargo-minor-mode)
-
-  (use-package racer     :ensure t)
-  (setq racer-cmd "~/.cargo/bin/racer")
-  (setq racer-rust-src-path
-        (let* ((sysroot (string-trim
-                         (shell-command-to-string "rustc --print sysroot")))
-               (lib-path (concat sysroot "/lib/rustlib/src/rust/library"))
-               (src-path (concat sysroot "/lib/rustlib/src/rust/src")))
-          (or (when (file-exists-p lib-path) lib-path)
-              (when (file-exists-p src-path) src-path))))
-  ;;(setq racer-rust-src-path "~/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library")
-  (add-hook 'rust-mode-hook #'racer-mode)
-  (add-hook 'racer-mode-hook #'eldoc-mode)
-  (add-hook 'racer-mode-hook #'company-mode)
-
-  (require 'rust-mode)
-  (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
-  (setq company-tooltip-align-annotations t)
-
-  (use-package flycheck-rust     :ensure t)
-  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
-
-  (use-package company-racer
-    :ensure t)
-  (with-eval-after-load 'company
-    (add-to-list 'company-backends 'company-racer))
-
+  (use-package rustic
+    :ensure t :after lsp-mode :init (setq rustic-format-on-save t))
 #+end_src
-
 
 #+begin_src emacs-lisp
 #+end_src
@@ -1029,11 +954,16 @@ Try these commands with =M-x=:
 
   (use-package flycheck-clang-tidy
     :after flycheck
-    ;; :config
-    ;; (setq exec-path (append exec-path '("~/.local/clang+llvm-11.0.1-x86_64-linux-gnu-ubuntu-16.04/bin")))
+    :config (setq flycheck-clang-tidy-extra-options "--format-style=file")
     :hook
     (flycheck-mode . flycheck-clang-tidy-setup)
     )
+
+  (eval-after-load 'flycheck-clang-tidy
+    '(progn
+       ;; (flycheck-add-next-checker 'c/c++-clang-tidy 'c/c++-clang)
+       ;; (flycheck-add-next-checker 'c/c++-clang 'c/c++-cppcheck)))
+       (flycheck-add-next-checker 'c/c++-clang-tidy 'c/c++-cppcheck)))
 
   (put 'narrow-to-region 'disabled nil)
   (setq org-src-tab-acts-natively t)
