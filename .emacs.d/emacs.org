@@ -7,7 +7,7 @@ This is my emacs configuration mixed with the [[https://github.com/daviwil/emacs
 configuration from a Org Mode document.  This file generates [[file:init.el][init.el]] which can be loaded by Emacs at
 startup. To generate [[file:init.el][init.el]], use M-x org-babel-tangle.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   ;; NOTE: init.el is now generated from Emacs.org.  Please edit that file
   ;;       in Emacs and init.el will be generated automatically!
@@ -18,12 +18,11 @@ startup. To generate [[file:init.el][init.el]], use M-x org-babel-tangle.
 
   ;; Make frame transparency overridable
   (defvar r3n0/frame-transparency '(90 . 90))
-
 #+end_src
 
 * Startup Performance
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   ;; The default is 800 kilobytes.  Measured in bytes.
   (setq gc-cons-threshold (* 50 1000 1000))
@@ -40,61 +39,39 @@ startup. To generate [[file:init.el][init.el]], use M-x org-babel-tangle.
 #+end_src
 
 * Set custom backup data location
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   (setq backup-directory-alist '(("." . "~/.emacs-backup-files/")))
 #+end_src
 
+* Package Management Configuration
+#+begin_src emacs-lisp :results silent
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "https://orgmode.org/elpa/")
+                         ("elpa" . "https://elpa.gnu.org/packages/")))
 
-* Package System Setup Part 1
-
-We need to load the package management system before our secret init!
-#+begin_src emacs-lisp
-  ;; Initialize package sources
-  (require 'package)
+(package-initialize)
+(unless package-archive-contents (package-refresh-contents))
+(setq use-package-always-ensure t)
 #+end_src
 
-* Specific directories and secret init!
-
-#+begin_src emacs-lisp
+* Add local paths to load-path
+#+begin_src emacs-lisp :results silent
 ;; Custom local init
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp-init"))
 ;; submodules
 (add-to-list 'load-path "~/.emacs.d/site-lisp")
 (progn (cd "~/.emacs.d/site-lisp") (normal-top-level-add-subdirs-to-load-path))
-
-(require 'work_custom nil 'noerror)
 #+end_src
 
-* Package System Setup Part 2
-
-Emacs has a built in package manager but it doesn't make it easy to automatically install packages
-on a new system the first time you pull down your configuration. [[https://github.com/jwiegley/use-package][use-package]] is a really helpful
-package used in this configuration to make it a lot easier to automate the installation and
-configuration of everything else we use.
-
-#+begin_src emacs-lisp
-
-  (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "https://orgmode.org/elpa/")
-                           ("elpa" . "https://elpa.gnu.org/packages/")))
-
-  (package-initialize)
-  (unless package-archive-contents
-    (package-refresh-contents))
-
-    ;; Initialize use-package on non-Linux platforms
-  (unless (package-installed-p 'use-package)
-    (package-install 'use-package))
-
-  (require 'use-package)
-  (setq use-package-always-ensure t)
-
+* Load work specifics
+#+begin_src emacs-lisp :results silent
+(require 'work_custom nil 'noerror)
 #+end_src
 
 * Get the executable path from a shell session
 
 This allows to get some executable without defining the exec path ourselves.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   (use-package exec-path-from-shell
     :config
     (when (memq window-system '(mac ns x))
@@ -111,7 +88,7 @@ The auto-package-update package helps us keep our Emacs packages up to date!  It
 
 You can also use =M-x auto-package-update-now= to update right now!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (use-package auto-package-update
     :custom
@@ -124,28 +101,8 @@ You can also use =M-x auto-package-update-now= to update right now!
     (auto-package-update-at-time "09:00"))
 
 #+end_src
-
-# * Keep Folders Clean
-
-# We use the [[https://github.com/emacscollective/no-littering/blob/master/no-littering.el][no-littering]] package to keep folders where we edit files and the Emacs configuration folder clean!  It knows about a wide variety of variables for built in Emacs features as well as those from community packages so it can be much easier than finding and setting these variables yourself.
-
-# #+begin_src emacs-lisp
-
-#   ;; NOTE: If you want to move everything out of the ~/.emacs.d folder
-#   ;; reliably, set `user-emacs-directory` before loading no-littering!
-#   ;(setq user-emacs-directory "~/.cache/emacs")
-
-#   (use-package no-littering)
-
-#   ;; no-littering doesn't set this by default so we must place
-#   ;; auto save files in the same path as it uses for sessions
-#   (setq auto-save-file-name-transforms
-#         `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
-
-# #+end_src
-
 * Use utf-8!
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   ;; Use utf-8 as default
   (setq locale-coding-system 'utf-8)
   (set-default-coding-systems 'utf-8)
@@ -155,7 +112,7 @@ You can also use =M-x auto-package-update-now= to update right now!
 #+end_src
 
 * Server configuration
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   ;; Allow access from emacsclient
   (require 'server)
   (unless (server-running-p)
@@ -164,7 +121,7 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 * Spaces, newlines, boundaries and parentheses!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   ;; Tabs are evil!
   (setq indent-tabs-mode nil)
   ;; Indicates empty lines
@@ -196,8 +153,8 @@ You can also use =M-x auto-package-update-now= to update right now!
 
   ;; Removes tabs from the entire buffer before saving
   (add-hook 'before-save-hook
-	    (lambda () (if (not indent-tabs-mode)
-			   (untabify (point-min) (point-max)))))
+            (lambda () (if (not indent-tabs-mode)
+                           (untabify (point-min) (point-max)))))
 
   ;; Deletes all blank lines at the end of the file before saving.
   (defun r3n0/delete-trailing-blank-lines ()
@@ -205,21 +162,21 @@ You can also use =M-x auto-package-update-now= to update right now!
     (interactive)
     (save-excursion
       (save-restriction (widen)
-			(goto-char (point-max))
-			(delete-blank-lines))))
+                        (goto-char (point-max))
+                        (delete-blank-lines))))
   (add-hook 'before-save-hook 'r3n0/delete-trailing-blank-lines)
 
 #+end_src
 
 * Timestamp format
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   (setq time-stamp-format "%:y-%02m-%02d %02H:%02M:%02S")
 #+end_src
 
 * Keybinding Configuration
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   ;; Unset some keybindings
   (global-unset-key (kbd "C-c C-t"))
   (global-unset-key (kbd "C-t"))
@@ -244,15 +201,16 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 #+end_src
 
+
 * Basic UI Configuration
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (setq inhibit-startup-screen t)
   (setq inhibit-startup-message t)
   (setq inhibit-startup-echo-area-message t)
 
-  (scroll-bar-mode -1)        ; Disable visible scrollbar
+  ;;(scroll-bar-mode -1)        ; Disable visible scrollbar
   (tool-bar-mode -1)          ; Disable the toolbar
   ;;(tooltip-mode -1)           ; Disable tooltips
   (set-fringe-mode 10)        ; Give some breathing room
@@ -287,13 +245,11 @@ You can also use =M-x auto-package-update-now= to update right now!
   ;; Allow the same buffer to be open in different frames
   (setq ido-default-buffer-method 'selected-window)
 
-
-
 #+end_src
 
 * Font Configuration
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (set-face-attribute 'default nil :family "Lucida Grande Mono DK" :foundry "b&h" :slant 'normal
 		      :weight 'normal :height r3n0/default-font-size :width 'semi-condensed)
@@ -305,10 +261,9 @@ You can also use =M-x auto-package-update-now= to update right now!
 #+end_src
 
 * Syntax highlighting
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   (global-font-lock-mode t)
 #+end_src
-
 
 * UI Configuration
 
@@ -316,7 +271,7 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 # [[https://github.com/lewang/command-log-mode][command-log-mode]] is useful for displaying a panel showing each key binding you use in a panel on the right side of the frame.  Great for live streams and screencasts!
 
-# #+begin_src emacs-lisp
+# #+begin_src emacs-lisp :results silent
 
 #   (use-package command-log-mode
 #     :commands command-log-mode)
@@ -325,9 +280,11 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 ** Color Theme
 
-[[https://github.com/hlissner/emacs-doom-themes][doom-themes]] is a great set of themes with a lot of variety and support for many different Emacs modes.  Taking a look at the [[https://github.com/hlissner/emacs-doom-themes/tree/screenshots][screenshots]] might help you decide which one you like best.  You can also run =M-x counsel-load-theme= to choose between them easily.
+[[https://github.com/hlissner/emacs-doom-themes][doom-themes]] is a great set of themes with a lot of variety and support for many different Emacs
+modes.  Taking a look at the [[https://github.com/hlissner/emacs-doom-themes/tree/screenshots][screenshots]] might help you decide which one you like best.  You can
+also run =M-x counsel-load-theme= to choose between them easily.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   ;; (load-theme 'deeper-blue 'NO-CONFIRM)
   (use-package doom-themes
     :init (load-theme 'doom-moonlight t))
@@ -348,46 +305,80 @@ You can also use =M-x auto-package-update-now= to update right now!
   ;; :init (load-theme 'doom-sourcerer t))
 
   (set-face-attribute 'fringe nil
-		      :foreground "dim gray"
-		      :background (face-background 'default))
+                      :foreground (face-foreground 'default)
+                      :background (face-background 'default))
 #+end_src
 
 ** Better Modeline
 
-[[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.  The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more things you can enable or disable.
+[[https://github.com/seagle0128/doom-modeline][doom-modeline]] is a very attractive and rich (yet still minimal) mode line configuration for Emacs.
+The default configuration is quite good but you can check out the [[https://github.com/seagle0128/doom-modeline#customize][configuration options]] for more
+things you can enable or disable.
 
-*NOTE:* The first time you load your configuration on a new machine, you'll need to run `M-x all-the-icons-install-fonts` so that mode line icons display correctly.
+*NOTE:* The first time you load your configuration on a new machine, you'll need to run `M-x
+all-the-icons-install-fonts` so that mode line icons display correctly.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
+  (use-package all-the-icons)
+  (setq doom-modeline-support-imenu t)
 
-(use-package all-the-icons)
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :custom
+    (doom-modeline-bar-width 5)
+    (doom-modeline-hud nil)
+    (doom-modeline-window-width-limit 70)
+    (doom-modeline-major-mode-color-icon t)
+    (doom-modeline-lsp-icon t))
 
-(use-package doom-modeline
-  :init (doom-modeline-mode 1)
-  :custom ((doom-modeline-height 20)))
+  (use-package emojify
+    :hook (after-init . global-emojify-mode))
+
+    ;(use-package doom-modeline
+    ;;   :hook (after-init . doom-modeline-mode)
+    ;;   :custom
+    ;;   (doom-modeline-height 25)
+    ;;   (doom-modeline-bar-width 1)
+    ;;   (doom-modeline-icon t)
+    ;;   (doom-modeline-major-mode-icon t)
+    ;;   (doom-modeline-major-mode-color-icon t)
+    ;;   (doom-modeline-buffer-file-name-style 'truncate-upto-project)
+    ;;   (doom-modeline-buffer-state-icon t)
+    ;;   (doom-modeline-buffer-modification-icon t)
+    ;;   (doom-modeline-minor-modes nil)
+    ;;   (doom-modeline-enable-word-count nil)
+    ;;   (doom-modeline-buffer-encoding t)
+    ;;   (doom-modeline-indent-info nil)
+    ;;   (doom-modeline-checker-simple-format t)
+    ;;   (doom-modeline-vcs-max-length 12)
+    ;;   (doom-modeline-env-version t)
+    ;;   (doom-modeline-irc-stylize 'identity)
+    ;;   (doom-modeline-github-timer nil)
+    ;;   (doom-modeline-gnus-timer nil))
 
 #+end_src
 
 ** Which Key
 
-[[https://github.com/justbur/emacs-which-key][which-key]] is a useful UI panel that appears when you start pressing any key binding in Emacs to offer you all possible completions for the prefix.  For example, if you press =C-c= (hold control and press the letter =c=), a panel will appear at the bottom of the frame displaying all of the bindings under that prefix and which command they run.  This is very useful for learning the possible key bindings in the mode of your current buffer.
+[[https://github.com/justbur/emacs-which-key][which-key]] is a useful UI panel that appears when you start pressing any key binding in Emacs to
+offer you all possible completions for the prefix.  For example, if you press =C-c= (hold control
+and press the letter =c=), a panel will appear at the bottom of the frame displaying all of the
+bindings under that prefix and which command they run.  This is very useful for learning the
+possible key bindings in the mode of your current buffer.
 
-#+begin_src emacs-lisp
-
+#+begin_src emacs-lisp :results silent
   (use-package which-key
     :defer 0
     :diminish which-key-mode
     :config
     (which-key-mode)
     (setq which-key-idle-delay 1))
-
 #+end_src
 
 * Custom editing commands
 
 ** Indent the whole buffer
-
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   ;; Indents the whole buffer
   (defun iwb ()
     "Indents whole buffer."
@@ -397,8 +388,7 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 ** Move the current line up and down
 
-#+begin_src emacs-lisp
-
+#+begin_src emacs-lisp :results silent
   ;; Move line up or down functions
   (defun r3n0/move-line (n)
     "Move the current line up or down by N lines."
@@ -425,25 +415,23 @@ You can also use =M-x auto-package-update-now= to update right now!
 
   (global-set-key (kbd "M-<up>") 'r3n0/move-line-up)
   (global-set-key (kbd "M-<down>") 'r3n0/move-line-down)
-
 #+end_src
 
 ** Duplicate the current line with C-d
 
-
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   (global-unset-key (kbd "C-d"))
   (add-hook 'cc-mode-hook
-	    (lambda()
-	      (local-unset-key (kbd "C-d"))))
+            (lambda()
+              (local-unset-key (kbd "C-d"))))
 
   (add-hook 'c++-mode-hook
-	    (lambda()
-	      (local-unset-key (kbd "C-d"))))
+            (lambda()
+              (local-unset-key (kbd "C-d"))))
 
   (add-hook 'c-mode-hook
-	    (lambda()
-	      (local-unset-key (kbd "C-d"))))
+            (lambda()
+              (local-unset-key (kbd "C-d"))))
 
   ;; From http://stackoverflow.com/questions/88399/how-do-i-duplicate-a-whole-line-in-emacs
   (defun r3n0/duplicate-line()
@@ -460,15 +448,15 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 * Undo tree
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
    ;; those bindings need to by replaced...
    (use-package undo-tree
      :init (global-undo-tree-mode 1)
      :bind (("C-c j" . undo-tree-undo)
-	    ("C-c k" . undo-tree-redo)
-	    ("C-c l" . undo-tree-switch-branch)
-	    ("C-c ;" . undo-tree-visualize))
+            ("C-c k" . undo-tree-redo)
+            ("C-c l" . undo-tree-switch-branch)
+            ("C-c ;" . undo-tree-visualize))
      :ensure t)
 
   (setq undo-tree-history-directory-alist '(("." . "~/.emacs-backup-files/")))
@@ -476,9 +464,12 @@ You can also use =M-x auto-package-update-now= to update right now!
 
 * Auto-tangle Configuration Files
 
-This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-config= gets executed each time such a buffer gets saved.  This function checks to see if the file being saved is the Emacs.org file you're looking at right now, and if so, automatically exports the configuration here to the associated output files.
+This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-config= gets executed
+each time such a buffer gets saved.  This function checks to see if the file being saved is the
+Emacs.org file you're looking at right now, and if so, automatically exports the configuration here
+to the associated output files.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   ;; Automatically tangle our Emacs.org config file when we save it
   (defun r3n0/org-babel-tangle-config ()
@@ -492,20 +483,13 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
 
 #+end_src
 
-* Parens
-
-#+begin_src emacs-lisp
-
-
-
-#+end_src
-
 
 * Git configuration
 
-[[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly using Magit's command panel system.
+[[https://magit.vc/][Magit]] is the best Git interface I've ever used.  Common Git operations are easy to execute quickly
+using Magit's command panel system.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (use-package magit :ensure t
   ;;   :commands magit-status
@@ -514,8 +498,8 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
   )
 
   (setq git-commit-fill-column 72
-	git-commit-summary-max-length 51
-	git-commit-style-convention-checks '(non-empty-second-line overlong-summary-line)
+        git-commit-summary-max-length 51
+        git-commit-style-convention-checks '(non-empty-second-line overlong-summary-line)
         git-commit-setup-hook '(git-commit-save-message git-commit-setup-changelog-support git-commit-turn-on-auto-fill git-commit-turn-on-flyspell git-commit-propertize-diff with-editor-usage-message)
   )
 
@@ -535,7 +519,7 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
 
 * Load basic completion and snippets support
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   (use-package yasnippet :ensure t)
   (use-package yasnippet-snippets :ensure t)
 
@@ -547,18 +531,15 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
 
   (use-package flycheck
     :config
-    (global-flycheck-mode)
+    (global-flycheck-mode t)
     (setq flycheck-clang-language-standard "c++17")
-    (setq flycheck-gcc-language-standard "c++17")
-    :ensure t)
+    (setq flycheck-gcc-language-standard "c++17"))
 
   (use-package company
-    :config (add-hook 'after-init-hook 'global-company-mode)
-    :ensure t)
+    :config (add-hook 'after-init-hook 'global-company-mode))
   ;; With use-package:
   (use-package company-box
-    :hook (company-mode . company-box-mode)
-    :ensure t)
+    :hook (company-mode . company-box-mode))
 
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
   (setq company-tooltip-align-annotations t)
@@ -569,6 +550,11 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
   ;; Number the candidates (use M-1, M-2 etc to select completions).
   (setq company-show-numbers t)
 
+  ;; load eglot for latter use
+  (use-package eglot)
+  (use-package flycheck-eglot
+    :after (flycheck eglot)
+    :config (global-flycheck-eglot-mode 1))
 #+end_src
 
 * From EFS
@@ -578,7 +564,7 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
 
 # [[https://github.com/Yevgnen/ivy-rich][ivy-rich]] adds extra columns to a few of the Counsel commands to provide more information about each item.
 
-# #+begin_src emacs-lisp
+# #+begin_src emacs-lisp :results silent
 
 #   (use-package ivy
 #     :diminish
@@ -616,9 +602,12 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
 
 ** Helpful Help Commands
 
-[[https://github.com/Wilfred/helpful][Helpful]] adds a lot of very helpful (get it?) information to Emacs' =describe-= command buffers.  For example, if you use =describe-function=, you will not only get the documentation about the function, you will also see the source code of the function and where it gets used in other places in the Emacs configuration.  It is very useful for figuring out how things work in Emacs.
+[[https://github.com/Wilfred/helpful][Helpful]] adds a lot of very helpful (get it?) information to Emacs' =describe-= command buffers.  For
+example, if you use =describe-function=, you will not only get the documentation about the function,
+you will also see the source code of the function and where it gets used in other places in the
+Emacs configuration.  It is very useful for figuring out how things work in Emacs.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (use-package helpful
     :commands (helpful-callable helpful-variable helpful-command helpful-key)
@@ -633,17 +622,24 @@ This snippet adds a hook to =org-mode= buffers so that =efs/org-babel-tangle-con
 
 #+end_src
 
-** IDE Features with lsp-mode
+# ** IDE Features with lsp-mode
 
 *** lsp-mode
 
-We use the excellent [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to enable IDE-like functionality for many different programming languages via "language servers" that speak the [[https://microsoft.github.io/language-server-protocol/][Language Server Protocol]].  Before trying to set up =lsp-mode= for a particular language, check out the [[https://emacs-lsp.github.io/lsp-mode/page/languages/][documentation for your language]] so that you can learn which language servers are available and how to install them.
+We use the excellent [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to enable IDE-like functionality for many different programming
+languages via "language servers" that speak the [[https://microsoft.github.io/language-server-protocol/][Language Server Protocol]].  Before trying to set up
+=lsp-mode= for a particular language, check out the [[https://emacs-lsp.github.io/lsp-mode/page/languages/][documentation for your language]] so that you can
+learn which language servers are available and how to install them.
 
-The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mode='s default keybindings will be added.  I *highly recommend* using the prefix to find out what you can do with =lsp-mode= in a buffer.
+The =lsp-keymap-prefix= setting enables you to define a prefix for where =lsp-mode='s default
+keybindings will be added.  I *highly recommend* using the prefix to find out what you can do with
+=lsp-mode= in a buffer.
 
-The =which-key= integration adds helpful descriptions of the various keys so you should be able to learn a lot just by pressing =C-c l= in a =lsp-mode= buffer and trying different things that you find there.
+The =which-key= integration adds helpful descriptions of the various keys so you should be able to
+learn a lot just by pressing =C-c l= in a =lsp-mode= buffer and trying different things that you
+find there.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (defun efs/lsp-mode-setup ()
     (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
@@ -651,11 +647,17 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 
   (use-package lsp-mode
     :commands (lsp lsp-deferred)
-    :hook (lsp-mode . efs/lsp-mode-setup)
+    :hook (
+      (lsp-mode . efs/lsp-mode-setup)
+      (python-mode . lsp-deferred)
+      (python-ts-mode . lsp-deferred)
+      )
     :init
     (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+    (setq lsp-headerline-breadcrumb-enable-diagnostics nil)
     :config
-    (lsp-enable-which-key-integration t))
+    (lsp-enable-which-key-integration t)
+   )
 
 #+end_src
 
@@ -663,7 +665,7 @@ The =which-key= integration adds helpful descriptions of the various keys so you
 
 [[https://emacs-lsp.github.io/lsp-ui/][lsp-ui]] is a set of UI enhancements built on top of =lsp-mode= which make Emacs feel even more like an IDE.  Check out the screenshots on the =lsp-ui= homepage (linked at the beginning of this paragraph) to see examples of what it can do.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (use-package lsp-ui
     :hook (lsp-mode . lsp-ui-mode)
@@ -684,86 +686,78 @@ Try these commands with =M-x=:
 
 This package is built on the [[https://github.com/Alexander-Miller/treemacs][treemacs]] package which might be of some interest to you if you like to have a file browser at the left side of your screen in your editor.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent :tangle no
 
   (use-package lsp-treemacs
     :after lsp)
 
 #+end_src
 
-*** lsp-ivy
+# *** lsp-ivy
 
-[[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]] integrates Ivy with =lsp-mode= to make it easy to search for things by name in your code.  When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code.  Results will be populated in the minibuffer so that you can find what you're looking for and jump to that location in the code upon selecting the result.
+# [[https://github.com/emacs-lsp/lsp-ivy][lsp-ivy]] integrates Ivy with =lsp-mode= to make it easy to search for things by name in your code.  When you run these commands, a prompt will appear in the minibuffer allowing you to type part of the name of a symbol in your code.  Results will be populated in the minibuffer so that you can find what you're looking for and jump to that location in the code upon selecting the result.
 
-Try these commands with =M-x=:
+# Try these commands with =M-x=:
 
-- =lsp-ivy-workspace-symbol= - Search for a symbol name in the current project workspace
-- =lsp-ivy-global-workspace-symbol= - Search for a symbol name in all active project workspaces
+# - =lsp-ivy-workspace-symbol= - Search for a symbol name in the current project workspace
+# - =lsp-ivy-global-workspace-symbol= - Search for a symbol name in all active project workspaces
 
-#+begin_src emacs-lisp
+# #+begin_src emacs-lisp :results silent
 
-  (use-package lsp-ivy
-    :after lsp)
+#   (use-package lsp-ivy
+#     :after lsp)
 
-#+end_src
+# #+end_src
 
 *** Debugging with dap-mode
 
-[[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
+# [[https://emacs-lsp.github.io/dap-mode/][dap-mode]] is an excellent package for bringing rich debugging capabilities to Emacs via the [[https://microsoft.github.io/debug-adapter-protocol/][Debug Adapter Protocol]].  You should check out the [[https://emacs-lsp.github.io/dap-mode/page/configuration/][configuration docs]] to learn how to configure the debugger for your language.  Also make sure to check out the documentation for the debug adapter to see what configuration parameters are available to use for your debug templates!
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
-  (use-package dap-mode :ensure t :after lsp-mode :config (dap-auto-configure-mode))
-    ;;  (use-package dap-mode
-    ;;    ;; Uncomment the config below if you want all UI panes to be hidden by default!
-    ;;    ;; :custom
-    ;;    ;; (lsp-enable-dap-auto-configure nil)
-    ;;    ;; :config
-    ;;    ;; (dap-ui-mode 1)
-    ;;    :commands dap-debug
-    ;;    :config
-    ;;    ;; ;; Set up Node debugging
-    ;;    ;; (require 'dap-node)
-    ;;    ;; (dap-node-setup) ;; Automatically installs Node debug adapter if needed
+  (use-package dap-mode
+    :after lsp-mode
+    :commands dap-debug
+    :hook ((python-mode . dap-ui-mode) (python-mode . dap-mode))
+    :config
+    (require 'dap-python)
+    (setq dap-python-debugger 'debugpy)
+    (defun dap-python--pyenv-executable-find (command)
+      (with-venv (executable-find "python")))
 
-    ;;    ;; ;; Bind `C-c l d` to `dap-hydra` for easy access
-    ;;    ;; (general-define-key
-    ;;    ;;   :keymaps 'lsp-mode-map
-    ;;    ;;   :prefix lsp-keymap-prefix
-    ;;    ;;   "d" '(dap-hydra t :wk "debugger"))
-    ;; )
-
+    (add-hook 'dap-stopped-hook
+	      (lambda (arg) (call-interactively #'dap-hydra))))
 #+end_src
 
-
-** Java Support
-#+begin_src emacs-lisp
-    (use-package lsp-java :ensure t :config (add-hook 'java-mode-hook 'lsp))
-    (use-package dap-java :ensure nil)
-    ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-#+end_src
+# ** Java Support
+# #+begin_src emacs-lisp :results silent
+#   (use-package lsp-java :ensure t :config (add-hook 'java-mode-hook 'lsp))
+#   (use-package dap-java :ensure nil)
+#   ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+#   ;; (setq lsp-java-format-settings-url "~/.emacs.d/eclipse-java-google-style.xml")
+#   ;; (setq lsp-java-format-settings-profile "GoogleStyle")
+#   (add-hook 'java-mode-hook (defun my-set-java-tab-width () (setq indent-tabs-mode nil) (setq c-basic-offset 2)))
+#   (setq lsp-java-imports-gradle-wrapper-checksums [(:sha256 "ed2c26eba7cfb93cc2b7785d05e534f07b5b48b5e7fc941921cd098628abca58"
+#    :allowed t)])
+# #+end_src
 
 
 * C/C++ support
 
-#+begin_src emacs-lisp
-
-  (use-package eglot
-    :ensure t)
+#+begin_src emacs-lisp :results silent
   (add-to-list 'eglot-server-programs '((c++-mode c-mode) "clangd"))
   (add-hook 'c-mode-hook 'eglot-ensure)
   (add-hook 'c++-mode-hook 'eglot-ensure)
 
   (use-package company-c-headers
     :config (eval-after-load 'company
-	      '(add-to-list 'company-backends 'company-c-headers))
+              '(add-to-list 'company-backends 'company-c-headers))
     :ensure t)
-
-  (add-to-list 'company-c-headers-path-system "/opt/gcc-8.3.0/include/c++/8.3.0/")
+  (add-to-list 'company-c-headers-path-system "/usr/include/c++/10/")
 #+end_src
 
 * Ruby support
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
   (use-package inf-ruby       :ensure t)
   (eval-after-load 'company
     '(add-to-list 'company-backends 'company-inf-ruby))
@@ -777,66 +771,70 @@ Try these commands with =M-x=:
 #+end_src
 
 * Python support
-#+begin_src emacs-lisp
-
+#+begin_src emacs-lisp :results silent
   (exec-path-from-shell-copy-env "REQUESTS_CA_BUNDLE")
-  (use-package elpy :ensure t :config (elpy-enable))
+  (setq major-mode-remap-alist '((python-mode . python-ts-mode)))
+  (use-package with-venv)
+  (use-package pyenv-mode :init (pyenv-mode))
+  (add-hook 'python-mode-hook (flycheck-mode -1))
 
-  (use-package pyenv-mode :ensure t
-    ;; :after python-mode
-    :config
-    (pyenv-mode)
-    (pyenv-mode-set "3.9.13")
-    )
+  (defun r3n0/lsp-pylsp-install-save-hooks ()
+    (add-hook 'before-save-hook 'lsp-format-buffer t t)
+    (add-hook 'before-save-hook 'lsp-organize-imports t t))
+  (add-hook 'python-mode-hook #'r3n0/lsp-pylsp-install-save-hooks)
+  (add-hook 'python-ts-mode-hook #'r3n0/lsp-pylsp-install-save-hooks)
 
-  (defun r3n0/pyenv-hook ()
-    "Automatically activates pyenv version if .python-version file exists."
-    (f-traverse-upwards
-     (lambda (path)
-       (let ((pyenv-version-path (f-expand ".python-version" path)))
-	 (if (f-exists? pyenv-version-path)
-	     (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
-  (add-hook 'find-file-hook 'r3n0/pyenv-hook)
+  ;; (defun r3n0/pyenv-hook ()
+  ;;   "Automatically activates pyenv version if .python-version file exists."
+  ;;   (f-traverse-upwards
+  ;;    (lambda (path)
+  ;;      (let ((pyenv-version-path (f-expand ".python-version" path)))
+  ;;        (if (f-exists? pyenv-version-path)
+  ;; 	   (pyenv-mode-set (s-trim (f-read-text pyenv-version-path 'utf-8))))))))
+  ;; (add-hook 'find-file-hook 'r3n0/pyenv-hook)
 
-  (add-hook 'python-mode-hook
-	    (lambda ()
-	      (setq indent-tabs-mode nil)
-	      (setq tab-width 4)
-	      (setq python-indent-offset 4)))
-
-  ;; Use IPython for REPL
-  (setq python-shell-interpreter "jupyter"
-	python-shell-interpreter-args "console --simple-prompt"
-	python-shell-prompt-detect-failure-warning nil)
-  (add-to-list 'python-shell-completion-native-disabled-interpreters
-	       "jupyter")
-
-  ;; Enable Flycheck
-  (when (require 'flycheck nil t)
-    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
-    (add-hook 'elpy-mode-hook 'flycheck-mode))
-
-  (use-package py-autopep8
-    :hook ((python-mode) . py-autopep8-mode))
-  ;; alternative blacken
-
-  ;; Emacs IPython Notebook
-  (use-package ein :ensure t)
-
+  ;; (add-hook 'python-mode-hook
+  ;; 	  (lambda ()
+  ;; 	    (setq indent-tabs-mode nil)
+  ;; 	    (setq tab-width 4)
+  ;; 	    (setq python-indent-offset 4)))
 #+end_src
 
 * Rust support
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
+    ;; (use-package rust-mode
+    ;;   :init
+    ;;   (setq rust-mode-treesitter-derive t))
   (use-package rustic
-    :ensure t :after lsp-mode :init (setq rustic-format-on-save t))
+    :bind (:map rustic-mode-map
+		("M-j" . lsp-ui-imenu)
+		("M-?" . lsp-find-references)
+		("C-c C-c l" . flycheck-list-errors)
+		("C-c C-c a" . lsp-execute-code-action)
+		("C-c C-c r" . lsp-rename)
+		("C-c C-c q" . lsp-workspace-restart)
+		("C-c C-c Q" . lsp-workspace-shutdown)
+		("C-c C-c s" . lsp-rust-analyzer-status))
+    :config
+    (setq rustic-format-on-save t)
+    :custom
+    (rustic-analyzer-command '("rustup" "run" "stable" "rust-analyzer")))
+
+  (setq rustic-lsp-client 'lsp)
+
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
 #+end_src
 
-#+begin_src emacs-lisp
+* ESS
+#+begin_src emacs-lisp :results silent
+  (use-package ess)
+  (use-package ess-view-data)
 #+end_src
+
 * Usefull day-to-day syntax/language support
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (use-package adoc-mode        :ensure t)
   (use-package cmake-font-lock  :ensure t)
@@ -852,7 +850,7 @@ Try these commands with =M-x=:
     :config
     (add-to-list 'auto-mode-alist '("\\.puml$" . plantuml-mode))
     (setq plantuml-default-exec-mode 'executable
-	  plantuml-indent-level 2))
+          plantuml-indent-level 2))
 
   (use-package coffee-mode
     :config (setq coffee-tab-width 2)
@@ -881,11 +879,17 @@ Try these commands with =M-x=:
     (add-to-list 'auto-mode-alist '("/nginx/sites-\\(?:available\\|enabled\\)/" . nginx-mode))
     :ensure t)
 
+  (use-package gnuplot          :ensure t)
+  (autoload 'gnuplot-mode "gnuplot" "Gnuplot major mode" t)
+  (autoload 'gnuplot-make-buffer "gnuplot" "open a buffer in gnuplot-mode" t)
+  (add-to-list 'auto-mode-alist '("\.gp$" . gnuplot-mode))
+
+  (use-package string-inflection :ensure t)
 #+end_src
 
 * Ensure all yasnippet/company backends are loaded
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 (global-set-key (kbd "C-c y") 'company-yasnippet)
 ;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
 ;; Add yasnippet support for all company backends
@@ -905,7 +909,7 @@ Try these commands with =M-x=:
 
 * Remaining config. to organize
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (auto-insert-mode)
   (setq auto-insert-query nil) ;;; If you don't want to be prompted before insertion
@@ -916,22 +920,17 @@ Try these commands with =M-x=:
     (yas/expand-snippet (buffer-string) (point-min) (point-max)))
 
   (setq auto-insert 'other
-	auto-insert-directory "~/.emacs.d/site-lisp/auto-insert-templates/"
-	)
+        auto-insert-directory "~/.emacs.d/site-lisp/auto-insert-templates/"
+        )
 
   (add-to-list 'auto-insert-alist
-	       '(("\\.\\(hh\\|hpp\\)\\'" . "C++ header") . ["c++-mode/template.hpp" r3n0/autoinsert-yas-expand]))
+               '(("\\.\\(hh\\|hpp\\)\\'" . "C++ header") . ["c++-mode/template.hpp" r3n0/autoinsert-yas-expand]))
   (add-to-list 'auto-insert-alist
-	       '(("\\.\\(cc\\|cpp\\)\\'" . "C++ source") . ["c++-mode/template.cpp" r3n0/autoinsert-yas-expand]))
-
-  (use-package lsp-java :ensure t :config (add-hook 'java-mode-hook 'lsp))
-  (use-package dap-java :ensure nil)
-  ;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-
+               '(("\\.\\(cc\\|cpp\\)\\'" . "C++ source") . ["c++-mode/template.cpp" r3n0/autoinsert-yas-expand]))
 
   (load "auctex.el" nil t t)
 
-  ;; (use-package auctex           :ensure t)
+  ;;(use-package auctex           :ensure t)
   ;; (use-package tex-site  :ensure auctex)
   (use-package company-auctex   :ensure t)
 
@@ -971,7 +970,7 @@ Try these commands with =M-x=:
 
 * Set some defaults
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file)
@@ -979,13 +978,14 @@ Try these commands with =M-x=:
   (setq default-directory "~")
   (put 'upcase-region 'disabled nil)
 
+  (defun flymake-simple-make-init ())
 #+end_src
 
 * Runtime Performance
 
 Dial the GC threshold back down so that garbage collection happens more frequently but in less time.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :results silent
 
   ;; Make gc pauses faster by decreasing the threshold.
   (setq gc-cons-threshold (* 2 1000 1000))
