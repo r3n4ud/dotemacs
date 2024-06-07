@@ -37,6 +37,7 @@
  '(lsp-pylsp-plugins-ruff-ignore [])
  '(lsp-pylsp-plugins-ruff-line-length 88)
  '(lsp-pylsp-plugins-ruff-preview t)
+ '(max-lisp-eval-depth 2000)
  '(nxml-slash-auto-complete-flag t)
  '(package-selected-packages
    '(emojify ivy-rich lsp-docker treemacs-magit treemacs-icons-dired treemacs-all-the-icons treemacs yard-mode company-inf-ruby company-nginx elisp-refs helpful ein rustic counsel company-box pyenv-mode lsp-ui lsp-java flycheck-clang-analyzer flycheck-clang-tidy mu4e-alert csv-mode auctex org-mime adoc-mode clang-format+ clang-format modern-cpp-font-lock yasnippet-snippets company-irony-c-headers ess-view ess-smart-equals ess 2048-game plantuml-mode protobuf-mode flycheck-irony cmake-font-lock yasnippet company-auctex lua-mode yaml-mode rust-mode use-package undo-tree smex smartparens git-gutter company-quickhelp))
